@@ -19,8 +19,10 @@
     "scripts": {
         "start": "react-scripts start",
         "build": "react-scripts build",
-        "test": "react-scripts test",
-        "eject": "react-scripts eject"
+        "test": "react-scripts test --watchAll=false --passWithNoTests",
+        "posttest": "yarn run eslint",
+        "eject": "react-scripts eject",
+        "eslint": "eslint ."
     },
     "eslintConfig": {
         "extends": [
