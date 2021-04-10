@@ -1,0 +1,42 @@
+@import './colors.scss';
+@import './fonts.scss';
+
+* {
+    font-family: $font;
+}
+
+a {
+    color: $color-foreground2;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+a:focus,
+input:focus {
+    outline: 1px dotted $color-accent2;
+}
+
+code {
+    font-family: $font-mono;
+    background-color: $color-background1;
+    padding: 0.2rem;
+    border-radius: 0.25rem;
+    width: 100%;
+}
+
+a:hover {
+    text-decoration: underline;
+    opacity: 1;
+    color: $color-foreground0;
+}
+
+#root {
+    min-height: 100vh;
+    overflow: hidden;
+    background-color: $color-background1;
+    color: $color-foreground1;
+}
+
+* {
+    box-sizing: border-box;
+}

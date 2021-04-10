@@ -1,0 +1,16 @@
+$font: 'CascadiaCode';
+$font-mono: 'CascadiaMono';
+
+@font-face {
+    font-family: $font;
+    font-style: normal;
+    font-weight: 400;
+    src: url(../resources/fonts/cascadia-code/CascadiaCode.ttf);
+}
+
+@font-face {
+    font-family: $font-mono;
+    font-style: normal;
+    font-weight: 400;
+    src: url(../resources/fonts/cascadia-code/CascadiaMono.ttf);
+}
