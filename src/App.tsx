@@ -1,10 +1,13 @@
 import React from 'react';
+import { ExpressionList } from './components/ExpressionList';
+import { Graph } from './components/Graph';
 
 const App: React.FC = () => {
     return (
-        <React.Fragment>
-            Hello World!
-        </React.Fragment>
+        <div className='app'>
+            <ExpressionList />
+            <Graph />
+        </div>
     );
 };
 
