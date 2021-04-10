@@ -4,20 +4,20 @@ jobs:
         docker:
             - image: cricleci/node:latest
 
-    steps:
-        - checkout
+        steps:
+            - checkout
 
-        - run:
-            name: Install dependencies
-            command: |
-                sudo apt update
+            - run:
+                name: Install dependencies
+                command: |
+                    sudo apt update
 
-        - run:
-            name: Yarn install
-            command: |
-                yarn install
+            - run:
+                name: Yarn install
+                command: |
+                    yarn install
 
-        - run:
-            name: Run tests
-            command: |
-                yarn test
+            - run:
+                name: Run tests
+                command: |
+                    yarn test
