@@ -1,5 +1,7 @@
 # Graphing Calculator
 
+[![Build Status](https://circleci.com/gh/Toddez/graphing-calculator.svg?style=svg)](https://circleci.com/gh/Toddez/graphing-calculator)
+
 ## Available Scripts
 
 In the project directory, you can run:
