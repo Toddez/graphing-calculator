@@ -1691,6 +1691,11 @@
   dependencies:
     "@babel/types" "^7.3.0"
 
+"@types/edtr-io__mathquill@*":
+  version "0.11.1"
+  resolved "https://registry.yarnpkg.com/@types/edtr-io__mathquill/-/edtr-io__mathquill-0.11.1.tgz#940e02c0e48bc9d31b9907915ad89ae1c7006fe3"
+  integrity sha512-xTLgZfPg4gGsLOb3Jww0QXsrwc557YEtkHMFsVU+Ci1pltfxrwWQpMWop6d/NC5htCvTSkJQ+IzxGdiMOLUn1A==
+
 "@types/eslint@^7.2.6":
   version "7.2.6"
   resolved "https://registry.yarnpkg.com/@types/eslint/-/eslint-7.2.6.tgz#5e9aff555a975596c03a98b59ecd103decc70c3c"
@@ -1811,6 +1816,14 @@
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-17.0.3.tgz#7fdf37b8af9d6d40127137865bb3fff8871d7ee1"
   integrity sha512-4NnJbCeWE+8YBzupn/YrJxZ8VnjcJq5iR1laqQ1vkpQgBiA7bwk0Rp24fxsdNinzJY2U+HHS4dJJDPdoMjdJ7w==
   dependencies:
+    "@types/react" "*"
+
+"@types/react-mathquill@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@types/react-mathquill/-/react-mathquill-0.1.1.tgz#92851637f3b15c64f9ab25ce5c6071f3d6ccaaee"
+  integrity sha512-n+9oOTCKBvCusdc/DfkzhJaCnkqltRwaAtv5hC7ivA6HM9hb3fFfviq8Gp4llQaRnWbL9s4Fop6y2JEsNwD1kQ==
+  dependencies:
+    "@types/edtr-io__mathquill" "*"
     "@types/react" "*"
 
 "@types/react@*", "@types/react@^17.0.0":
@@ -9420,6 +9433,11 @@ react-is@^17.0.1:
   version "17.0.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.1.tgz#5b3531bd76a645a4c9fb6e693ed36419e3301339"
   integrity sha512-NAnt2iGDXohE5LI7uBnLnqvLQMtzhkiAOLXTmv+qnF9Ky7xAPcX8Up/xWIhxvLVGJvuLiNc4xQLtuqDRzb4fSA==
+
+react-mathquill@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/react-mathquill/-/react-mathquill-1.0.1.tgz#3fed290d43a796d4eeac0d6f8cc7f4912689a7eb"
+  integrity sha512-r49RWfHPSyEgGDHdq6khOO5MWtqFhDxtrhGNdHxmuwgpx+pB9+NiIF+QolvIyea0FMkVmyzsC6R3jjK8oK6skQ==
 
 react-refresh@^0.8.3:
   version "0.8.3"
