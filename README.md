@@ -1,6 +1,6 @@
 # Graphing Calculator
 
-[![Build Status](https://circleci.com/gh/Toddez/graphing-calculator.svg?style=svg)](https://circleci.com/gh/Toddez/graphing-calculator)
+[![Build Status](https://circleci.com/gh/Toddez/graphing-calculator.svg?style=svg&circle-token=54d500e2fe51f85d9d4b9cc90b85512ae828e59a)](https://circleci.com/gh/Toddez/graphing-calculator)
 
 ## Available Scripts
 
