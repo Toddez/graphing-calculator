@@ -1,0 +1,55 @@
+@import './colors.scss';
+@import './fonts.scss';
+
+.expression-list {
+    display: flex;
+    flex-direction: column;
+
+    .expression {
+        display: flex;
+        flex-direction: row;
+        border-top: 1px solid $color-border0;
+
+        &:focus-within {
+            background-color: $color-accent1;
+
+            .expression-label {
+                border-color: $color-accent1;
+            }
+        }
+
+        .expression-label {
+            width: 2rem;
+            border-right: 1px solid $color-border0;
+        }
+
+        .expression-text {
+            width: 100%;
+            border: 0;
+            outline: 0;
+            padding: 1px;
+            padding-left: 0;
+
+            &, * {
+                font-family: $font-light;
+            }
+
+            &.mq-editable-field.mq-focused {
+                box-shadow: none;
+
+                .mq-root-block {
+                    background-color: $color-background0;
+                }
+            }
+
+            .mq-root-block {
+                padding: 1rem;
+            }
+        }
+
+        .expression-delete {
+            position: absolute;
+            right: 0;
+        }
+    }
+}
