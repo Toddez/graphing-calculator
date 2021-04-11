@@ -6,21 +6,40 @@
     flex-direction: column;
 
     .expression {
+        position: relative;
         display: flex;
         flex-direction: row;
         border-top: 1px solid $color-border0;
+
+        &.expression-create {
+            &, * {
+                cursor: pointer;
+            }
+
+            .expression-label {
+                background: -webkit-linear-gradient(top, $color-background0, $color-background1);
+                border-image: linear-gradient(to bottom, $color-border0, rgba(0, 0, 0, 0)) 1 100%;
+            }
+
+            .expression-text {
+                padding: 2rem;
+            }
+        }
 
         &:focus-within {
             background-color: $color-accent1;
 
             .expression-label {
                 border-color: $color-accent1;
+                background: $color-accent1;
             }
         }
 
         .expression-label {
             width: 2rem;
             border-right: 1px solid $color-border0;
+            padding: 0.5rem;
+            background: $color-background0;
         }
 
         .expression-text {
@@ -49,7 +68,9 @@
 
         .expression-delete {
             position: absolute;
-            right: 0;
+            top: 0.25rem;
+            right: 0.25rem;
+            cursor: pointer;
         }
     }
 }
