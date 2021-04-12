@@ -19,10 +19,14 @@ const initialExpressions: Array<Expression> = [
 ];
 Object.assign(initialExpressions[0], emptyExpression);
 
-export const ExpressionList: React.FunctionComponent = () => {
+interface ExpressionListProps {
+    expressionsChange: ExpressionsChange
+}
+
+export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({ expressionsChange }) => {
     const [expressions, setExpressions] = useState<Array<Expression>>(initialExpressions);
 
-    const orderExpressions = () => {
+    const orderExpressions = () : Array<Expression> => {
         for (const expression of expressions) {
             let insertionWeight = 0;
             let validExpr = true;
@@ -96,7 +100,7 @@ export const ExpressionList: React.FunctionComponent = () => {
 
         expressions[expressions.indexOf(expression)] = expression;
         setExpressions(expressions);
-        orderExpressions(); // TODO: should be moved
+        expressionsChange(orderExpressions());
     };
 
     const deleteExpression: ExpressionDelete = (expression) => {
