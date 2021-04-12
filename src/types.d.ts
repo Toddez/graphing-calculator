@@ -1,5 +1,7 @@
 type Expression = {
-    latex: string
+    latex: string,
+    text: string,
+    variables: Array<string>
 };
 
 type ExpressionChange = (expression: Expression, latex: string) => void;
