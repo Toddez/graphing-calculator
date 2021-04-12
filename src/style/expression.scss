@@ -4,6 +4,9 @@
 .expression-list {
     display: flex;
     flex-direction: column;
+    flex: 0 400px;
+    overflow-y: auto;
+    border-bottom: 1px solid $color-border0;
 
     .expression {
         position: relative;

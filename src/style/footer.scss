@@ -1,0 +1,51 @@
+@import './colors.scss';
+
+.footer {
+    order: 1;
+    height: 3rem;
+    width: 100%;
+    max-width: 95vw;
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    align-items: center;
+    margin: 0 auto;
+
+    & > .icon {
+        margin-right: 1rem;
+
+        & > svg {
+            height: 2rem;
+
+            & * {
+                fill: $color-accent1 !important;
+            }
+        }
+    }
+
+    & > .links {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        width: 100%;
+
+        & > .item {
+            margin-left: 1rem;
+
+            &.copyright {
+                color: $color-foreground0;
+            }
+        }
+    }
+
+    & > a {
+        color: $color-accent1;
+    }
+}
+
+@media only screen and (max-width: 700px) {
+    footer > .links {
+        justify-content: space-evenly;
+    }
+}
