@@ -1,15 +1,33 @@
 import React from 'react';
 import { ExpressionList } from './components/ExpressionList';
 import { Graph } from './components/Graph';
+import { EvaluateExpressionWorker } from './workers';
 
 const App: React.FunctionComponent = () => {
     const expressionsChanged: ExpressionsChange = (expressions) => {
-        console.log('Expressions changed:', expressions);
         evaluateExpressions(expressions);
     };
 
-    const evaluateExpressions = (expressions: Array<Expression>) => {
-        console.log('EVAL');
+    const evaluateExpressions = async (expressions: Array<Expression>) => {
+        const instance = new EvaluateExpressionWorker();
+        const data = {
+            expressions: expressions,
+            scope: {
+                x: {
+                    min: -1920/2,
+                    max: 1920/2,
+                    step:  1
+                },
+                y: {
+                    min: -1080/2,
+                    max: 1080/2,
+                    step:  1
+                }
+            }
+        };
+
+        const processed = JSON.parse(await instance.processData(JSON.stringify(data)));
+        console.log('Results:', processed);
     };
 
     return (
