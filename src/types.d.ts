@@ -1,7 +1,13 @@
+
+type Variable = string;
+
 type Expression = {
     latex: string,
-    text: string,
-    variables: Array<string>
+    code: string,
+    defines: Variable | null,
+    references: Set<Variable>,
+    weight: number,
+    valid: boolean
 };
 
 type ExpressionChange = (expression: Expression, latex: string) => void;
