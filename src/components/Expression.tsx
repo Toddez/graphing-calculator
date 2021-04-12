@@ -25,7 +25,6 @@ export const Expression: React.FunctionComponent<ExpressionProps> = ({ expressio
                             mathField.focus();
                     }}
                     onChange={(mathField) => {
-                        console.dir(mathField);
                         if (expressionChange)
                             expressionChange(expression, mathField.latex());
                     }}
