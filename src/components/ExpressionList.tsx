@@ -3,10 +3,15 @@ import { Expression } from './Expression';
 import MathExpression from 'math-expressions';
 import '../style/expression.scss';
 
+const builtinVariables = new Set<Variable>(['x', 'y']);
+
 const emptyExpression: Expression = {
     latex: '',
-    text: '',
-    variables: []
+    code: '',
+    defines: null,
+    references: new Set<Variable>([]),
+    weight: 0,
+    valid: false
 };
 
 const initialExpressions: Array<Expression> = [
@@ -17,20 +22,81 @@ Object.assign(initialExpressions[0], emptyExpression);
 export const ExpressionList: React.FunctionComponent = () => {
     const [expressions, setExpressions] = useState<Array<Expression>>(initialExpressions);
 
+    const orderExpressions = () => {
+        for (const expression of expressions) {
+            let insertionWeight = 0;
+            let validExpr = true;
+            for (const reference of Array.from(expression.references)) {
+                let weight = 0;
+                let noRef = !builtinVariables.has(reference);
+                compare: for (const other of expressions) {
+                    if (other === expression)
+                        continue compare;
+
+                    if (other.defines === reference) {
+                        noRef = false;
+                        break compare;
+                    }
+
+                    weight++;
+                }
+
+                insertionWeight = Math.max(insertionWeight, weight);
+
+                // FIXME: doesn't find self references because of defines and references parsing
+                if (reference === expression.defines) {
+                    // TODO: display error
+                    console.warn('EXPRESSION', expression.code, 'HAS REFERENCE TO SELF', reference);
+                    validExpr = false;
+                }
+
+                if (noRef == true) {
+                    // TODO: display error
+                    console.warn('EXPRESSION', expression.code, 'HAS REFERENCE TO UNDEFINED VARIABLE:', reference);
+                    validExpr = false;
+                }
+            }
+
+            expression.valid = validExpr;
+            expression.weight = insertionWeight;
+        }
+
+        const orderedExpressions = [...expressions];
+        orderedExpressions.sort((a, b) => {
+            return a.weight > b.weight ? 1 : -1;
+        });
+
+        return orderedExpressions;
+    };
+
     const updateExpression: ExpressionChange = (expression, latex) => {
         expression.latex = latex;
 
         try {
             const latexNodes = MathExpression.fromLatex(latex);
-            expression.variables = latexNodes.variables();
-            expression.text = latexNodes.toString();
+            const variables = latexNodes.variables();
+            // FIXME: Should really check if node tree has assignment operator
+            if (variables.length < 1)
+                expression.defines = null;
+            else
+                expression.defines = variables[0];
+
+            // FIXME: Should also check for assignment operator
+            if (variables.length < 2)
+                expression.references = new Set<Variable>([]);
+            else
+                expression.references = new Set<Variable>(variables.slice(1));
+
+            expression.code = latexNodes.toString();
         } catch {
-            expression.text = '';
-            expression.variables = [];
+            expression.code = '';
+            expression.defines = null;
+            expression.references = new Set<Variable>([]);
         }
 
         expressions[expressions.indexOf(expression)] = expression;
         setExpressions(expressions);
+        orderExpressions(); // TODO: should be moved
     };
 
     const deleteExpression: ExpressionDelete = (expression) => {
