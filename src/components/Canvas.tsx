@@ -8,8 +8,8 @@ const Canvas: React.FunctionComponent = () => {
         if (!parent)
             return;
 
-        ctx.canvas.width = parent?.offsetWidth as number;
-        ctx.canvas.height = parent?.offsetHeight as number;
+        ctx.canvas.width = parent?.clientWidth as number;
+        ctx.canvas.height = parent?.clientHeight as number;
 
         ctx.fillStyle = '#000000'; // TODO: Configurable style
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);

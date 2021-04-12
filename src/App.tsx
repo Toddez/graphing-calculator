@@ -1,39 +1,15 @@
 import React from 'react';
-import { ExpressionList } from './components/ExpressionList';
-import { Graph } from './components/Graph';
-import { EvaluateExpressionWorker } from './workers';
+import { Header } from './components/Header';
+import { Main } from './components/Main';
+import { Footer } from './components/Footer';
+import './style/app.scss';
 
 const App: React.FunctionComponent = () => {
-    const expressionsChanged: ExpressionsChange = (expressions) => {
-        evaluateExpressions(expressions);
-    };
-
-    const evaluateExpressions = async (expressions: Array<Expression>) => {
-        const instance = new EvaluateExpressionWorker();
-        const data = {
-            expressions: expressions,
-            scope: {
-                x: {
-                    min: -1920/2,
-                    max: 1920/2,
-                    step:  1
-                },
-                y: {
-                    min: -1080/2,
-                    max: 1080/2,
-                    step:  1
-                }
-            }
-        };
-
-        const processed = JSON.parse(await instance.processData(JSON.stringify(data)));
-        console.log('Results:', processed);
-    };
-
     return (
         <div className='app'>
-            <ExpressionList expressionsChange={expressionsChanged} />
-            <Graph />
+            <Header />
+            <Main />
+            <Footer />
         </div>
     );
 };
