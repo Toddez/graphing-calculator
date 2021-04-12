@@ -7,12 +7,12 @@ addStyles();
 interface ExpressionProps {
     expression: Expression,
     label: string
-    expressionChange: ExpressionChange | null,
-    expressionDelete: ExpressionDelete | null,
-    expressionCreate: ExpressionCreate | null,
+    expressionChange?: ExpressionChange,
+    expressionDelete?: ExpressionDelete,
+    expressionCreate?: ExpressionCreate,
 }
 
-export const Expression: React.FunctionComponent<ExpressionProps> = ({ expression, label, expressionChange, expressionDelete, expressionCreate }) => {
+const Expression: React.FunctionComponent<ExpressionProps> = ({ expression, label, expressionChange, expressionDelete, expressionCreate }) => {
     return (
         <div className={`expression${expressionCreate ? ' expression-create' : ''}`} onClick={expressionCreate ?? undefined}>
             <div className='expression-label'>{label}</div>
@@ -39,3 +39,5 @@ export const Expression: React.FunctionComponent<ExpressionProps> = ({ expressio
         </div>
     );
 };
+
+export { Expression };

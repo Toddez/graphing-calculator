@@ -126,15 +126,13 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({ e
                         expression={expression}
                         expressionChange={updateExpression}
                         expressionDelete={deleteExpression}
-                        expressionCreate={null} />
+                    />
                 );
             })}
             <Expression
                 key={expressions.length}
                 label={(expressions.length + 1) as unknown as string}
                 expression={emptyExpression}
-                expressionChange={null}
-                expressionDelete={null}
                 expressionCreate={createExpression} />
         </div>
     );
