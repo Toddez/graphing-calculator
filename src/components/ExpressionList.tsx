@@ -2,29 +2,57 @@ import React, { useState } from 'react';
 import { Expression } from './Expression';
 import '../style/expression.scss';
 
-const initialExpressions = [
-    {
-        latex: ''
-    }
+const emptyExpression: Expression = {
+    latex: ''
+};
+
+const initialExpressions: Array<Expression> = [
+    {} as Expression
 ];
+Object.assign(initialExpressions[0], emptyExpression);
 
 export const ExpressionList: React.FunctionComponent = () => {
     const [expressions, setExpressions] = useState<Array<Expression>>(initialExpressions);
 
-    let label = 1;
-    const newExpression = {} as Expression;
+    const updateExpression: ExpressionChange = (expression, latex) => {
+        expression.latex = latex;
+        expressions[expressions.indexOf(expression)] = expression;
+        setExpressions(expressions);
+    };
+
+    const deleteExpression: ExpressionDelete = (expression) => {
+        const newExpressions = expressions.filter((expr) => {
+            return expr !== expression;
+        });
+        setExpressions(newExpressions);
+    };
+
+    const createExpression: ExpressionCreate = () => {
+        const newExpression = {} as Expression;
+        Object.assign(newExpression, emptyExpression);
+        setExpressions([...expressions, newExpression]);
+    };
+
     return (
         <div className='expression-list'>
-            {expressions.map((expression: Expression) => {
+            {expressions.map((expression: Expression, index) => {
                 return (
-                    <Expression key={label++} label={label as unknown as string} expression={expression} expressionChange={() => {console.log('Change', expression.latex);}} expressionDelete={() => {console.log('Delete');}} expressionCreate={null} />
+                    <Expression
+                        key={index}
+                        label={(index + 1) as unknown as string}
+                        expression={expression}
+                        expressionChange={updateExpression}
+                        expressionDelete={deleteExpression}
+                        expressionCreate={null} />
                 );
             })}
-            <Expression key={label} label={label as unknown as string} expression={newExpression} expressionChange={null} expressionDelete={null} expressionCreate={() => {
-                console.log('Create');
-                newExpression.latex = '';
-                setExpressions([...expressions, newExpression]);
-            }} />
+            <Expression
+                key={expressions.length}
+                label={(expressions.length + 1) as unknown as string}
+                expression={emptyExpression}
+                expressionChange={null}
+                expressionDelete={null}
+                expressionCreate={createExpression} />
         </div>
     );
 };

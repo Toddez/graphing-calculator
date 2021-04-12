@@ -25,16 +25,16 @@ export const Expression: React.FunctionComponent<ExpressionProps> = ({ expressio
                             mathField.focus();
                     }}
                     onChange={(mathField) => {
-                        expression.latex = mathField.latex();
+                        console.dir(mathField);
                         if (expressionChange)
-                            expressionChange();
+                            expressionChange(expression, mathField.latex());
                     }}
                 /> : <div className='expression-text'></div>
             }
             {expressionDelete ?
                 <div className='expression-delete' onClick={() => {
                     if (expressionDelete)
-                        expressionDelete();
+                        expressionDelete(expression);
                 }}><ClearIcon /></div> : null
             }
         </div>
