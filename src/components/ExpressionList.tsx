@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { Expression } from './Expression';
+import MathExpression from 'math-expressions';
 import '../style/expression.scss';
 
 const emptyExpression: Expression = {
-    latex: ''
+    latex: '',
+    text: '',
+    variables: []
 };
 
 const initialExpressions: Array<Expression> = [
@@ -16,6 +19,16 @@ export const ExpressionList: React.FunctionComponent = () => {
 
     const updateExpression: ExpressionChange = (expression, latex) => {
         expression.latex = latex;
+
+        try {
+            const latexNodes = MathExpression.fromLatex(latex);
+            expression.variables = latexNodes.variables();
+            expression.text = latexNodes.toString();
+        } catch {
+            expression.text = '';
+            expression.variables = [];
+        }
+
         expressions[expressions.indexOf(expression)] = expression;
         setExpressions(expressions);
     };
