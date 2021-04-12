@@ -13,3 +13,5 @@ type Expression = {
 type ExpressionChange = (expression: Expression, latex: string) => void;
 type ExpressionDelete = (expression: Expression) => void;
 type ExpressionCreate = () => void;
+
+type ExpressionsChange = (expressions: Array<Expression>) => void;
