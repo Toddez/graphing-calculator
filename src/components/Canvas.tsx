@@ -166,6 +166,7 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ expressionResults, updat
             const results = expressionResult.result;
 
             if (expression.defines === 'y') {
+                ctx.strokeStyle = expression.color;
                 ctx.beginPath();
                 for (const result of results) {
                     ctx.lineTo(result.scope.x, -result.value);
@@ -174,6 +175,7 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ expressionResults, updat
             }
 
             if (expression.defines === 'x') {
+                ctx.strokeStyle = expression.color;
                 ctx.beginPath();
                 for (const result of results) {
                     ctx.lineTo(result.value, -result.scope.y);
