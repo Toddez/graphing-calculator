@@ -56,12 +56,109 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ expressionResults, updat
         ctx.translate(-transform.position[0], transform.position[1]);
         ctx.scale(1 / transform.scale, 1 / transform.scale);
 
+        ctx.strokeStyle = '#111';
+        ctx.lineWidth = transform.scale;
+        drawGrid(ctx);
+
         ctx.strokeStyle = '#ffffff';
         ctx.lineWidth = transform.scale;
-        draw(ctx);
+        drawExpressions(ctx);
     };
 
-    const draw = (ctx: CanvasRenderingContext2D) => {
+    const getStepSize = (lines: number, min: number) : number => {
+        let scale = 1;
+        let step = 0;
+        let stop = false;
+        if (min / lines >= 1)
+            while (scale * lines < min && stop == false) {
+                if (step > 2)
+                    step = 0;
+
+                let change = 1;
+                switch (step) {
+                    case 0: change = 2; break;
+                    case 1: change = 2.5; break;
+                    case 2: change = 2; break;
+                }
+
+                if (min / (scale * change) >= lines)
+                    scale *= change;
+                else
+                    stop = true;
+
+                step++;
+            }
+        else
+            while (scale * lines > min) {
+                if (step > 2)
+                    step = 0;
+
+                switch (step) {
+                    case 0: scale /= 2; break;
+                    case 1: scale /= 2.5; break;
+                    case 2: scale /= 2; break;
+                }
+
+                step++;
+            }
+
+        return scale;
+    };
+
+    const drawGrid = (ctx: CanvasRenderingContext2D) => {
+        const min = Math.max(ctx.canvas.width, ctx.canvas.height) * transform.scale;
+        const step = getStepSize(15, min);
+
+        let dir = 1;
+        let index = 0;
+        const posX = Math.round((transform.position[0] * transform.scale) / step) * step;
+        for (let x = posX; x < posX + (ctx.canvas.width * transform.scale) / 2 + step; x += step * dir * index) {
+            ctx.beginPath();
+            if ((x / step) % 5 == 0) {
+                ctx.strokeStyle = '#444';
+            }
+            else
+                ctx.strokeStyle = '#151515';
+
+            ctx.moveTo(x, -(transform.position[1] * transform.scale) - (ctx.canvas.height * transform.scale) / 2);
+            ctx.lineTo(x, -(transform.position[1] * transform.scale) + (ctx.canvas.height * transform.scale) / 2);
+            ctx.stroke();
+            dir *= -1;
+            index++;
+        }
+
+        dir = 1;
+        index = 0;
+        const posY = Math.round((transform.position[1] * transform.scale) / step) * step;
+        for (let y = posY; y < posY + (ctx.canvas.height * transform.scale) / 2 + step; y += step * dir * index) {
+            ctx.beginPath();
+            if ((y / step) % 5 == 0) {
+                ctx.strokeStyle = '#444';
+            }
+            else
+                ctx.strokeStyle = '#151515';
+
+            ctx.moveTo((transform.position[0] * transform.scale) - (ctx.canvas.width * transform.scale) / 2, -y);
+            ctx.lineTo((transform.position[0] * transform.scale) + (ctx.canvas.width * transform.scale) / 2, -y);
+            ctx.stroke();
+            dir *= -1;
+            index++;
+        }
+
+
+        const x = (ctx.canvas.width * transform.scale) / 2;
+        const y = (ctx.canvas.height * transform.scale) / 2;
+
+        ctx.strokeStyle = '#fff';
+        ctx.beginPath();
+        ctx.moveTo(0, -(transform.position[1] * transform.scale) - y);
+        ctx.lineTo(0, -(transform.position[1] * transform.scale) + y);
+        ctx.moveTo((transform.position[0] * transform.scale) - x, 0);
+        ctx.lineTo((transform.position[0] * transform.scale) + x, 0);
+        ctx.stroke();
+    };
+
+    const drawExpressions = (ctx: CanvasRenderingContext2D) => {
         for (const expressionResult of expressionResults) {
             const expression = expressionResult.expression;
             const results = expressionResult.result;
