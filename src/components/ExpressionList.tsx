@@ -3,7 +3,7 @@ import { Expression } from './Expression';
 import MathExpression from 'math-expressions';
 import '../style/expression.scss';
 
-const builtinVariables = new Set<Variable>(['x', 'y']);
+const builtinVariables = new Set<Variable>(['x', 'y', 'e']);
 
 const emptyExpression: Expression = {
     latex: '',
