@@ -8,7 +8,8 @@ type Expression = {
     defines: Variable | null,
     references: Array<Variable>,
     weight: number,
-    valid: boolean
+    valid: boolean,
+    color: string
 };
 
 type Result = {

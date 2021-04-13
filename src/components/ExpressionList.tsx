@@ -11,13 +11,19 @@ const emptyExpression: Expression = {
     defines: null,
     references: new Array<Variable>(),
     weight: 0,
-    valid: false
+    valid: false,
+    color: '#ff0000'
 };
 
 const initialExpressions: Array<Expression> = [
     {} as Expression
 ];
 Object.assign(initialExpressions[0], emptyExpression);
+
+const selectColor = (index: number, max: number) : string => {
+    if (max < 1) max = 1;
+    return `hsl(${index * (360 / max) % 360}, 100%, 50%)`;
+};
 
 interface ExpressionListProps {
     expressionsChange: ExpressionsChange
@@ -27,6 +33,7 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({ e
     const [expressions, setExpressions] = useState<Array<Expression>>(initialExpressions);
 
     const orderExpressions = () : Array<Expression> => {
+        let validExpressions = 0;
         for (const expression of expressions) {
             let insertionWeight = 0;
             let validExpr = true;
@@ -63,6 +70,14 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({ e
 
             expression.valid = validExpr;
             expression.weight = insertionWeight;
+            if (validExpr)
+                validExpressions++;
+        }
+
+        let index = 0;
+        for (const expression of expressions) {
+            if (expression.valid)
+                expression.color = selectColor(index++, validExpressions);
         }
 
         const orderedExpressions = [...expressions];
