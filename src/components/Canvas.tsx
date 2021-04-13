@@ -253,6 +253,7 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ expressionResults, updat
                 position[0] -= (delta[0] / 2) / scale;
                 position[1] += (delta[1] / 2) / scale;
 
+                // FIXME: When scrolling camera moves towards 0, 0 instead of mouse position.
                 setTransform({ ...transform, scale: scale, position: position });
                 clear();
             }}
