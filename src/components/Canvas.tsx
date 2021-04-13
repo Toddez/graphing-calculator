@@ -107,6 +107,8 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ expressionResults, updat
         const min = Math.max(ctx.canvas.width, ctx.canvas.height) * transform.scale;
         const step = getStepSize(15, min);
 
+        ctx.font= '12px CascadiaCode';
+
         let dir = 1;
         let index = 0;
         const posX = Math.round((transform.position[0] * transform.scale) / step) * step;
@@ -115,6 +117,15 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ expressionResults, updat
             if ((x / step) % 5 == 0) {
                 ctx.strokeStyle = '#555';
                 ctx.lineWidth = transform.scale * (2/3);
+
+                ctx.save();
+                ctx.translate(x, 0);
+                ctx.scale(transform.scale, transform.scale);
+                ctx.fillStyle = '#aaa';
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'bottom';
+                ctx.fillText(x as unknown as string, 0, 0);
+                ctx.restore();
             } else {
                 ctx.strokeStyle = '#252525';
                 ctx.lineWidth = transform.scale / 2;
@@ -123,6 +134,7 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ expressionResults, updat
             ctx.moveTo(x, -(transform.position[1] * transform.scale) - (ctx.canvas.height * transform.scale) / 2);
             ctx.lineTo(x, -(transform.position[1] * transform.scale) + (ctx.canvas.height * transform.scale) / 2);
             ctx.stroke();
+
             dir *= -1;
             index++;
         }
@@ -135,6 +147,15 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ expressionResults, updat
             if ((y / step) % 5 == 0) {
                 ctx.strokeStyle = '#555';
                 ctx.lineWidth = transform.scale * (2/3);
+
+                ctx.save();
+                ctx.translate(0, -y);
+                ctx.scale(transform.scale, transform.scale);
+                ctx.fillStyle = '#aaa';
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'bottom';
+                ctx.fillText(y as unknown as string, 0, 0);
+                ctx.restore();
             } else {
                 ctx.strokeStyle = '#252525';
                 ctx.lineWidth = transform.scale / 2;
@@ -143,6 +164,7 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ expressionResults, updat
             ctx.moveTo((transform.position[0] * transform.scale) - (ctx.canvas.width * transform.scale) / 2, -y);
             ctx.lineTo((transform.position[0] * transform.scale) + (ctx.canvas.width * transform.scale) / 2, -y);
             ctx.stroke();
+
             dir *= -1;
             index++;
         }
