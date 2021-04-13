@@ -7,47 +7,55 @@ export function processData(data: string): string {
     const scope = parsedData.scope;
 
     const outData = {
-        results: new Array(expressions.length).fill([])
+        expressionResults: new Array<ExpressionResult>()
     };
+    for (const expression of expressions) {
+        outData.expressionResults.push({
+            expression: expression as Expression,
+            result: new Array<Result>()
+        });
+    }
 
-    // TODO: Expressions which doesn't depend on x or y should only be evaluated once
-    try {
-        console.time('Expression evaluation');
-        const scopeVars = Object.keys(scope);
-        let min = Infinity;
-        let max = -Infinity;
-        let step = Infinity;
-        for (const variable of scopeVars) {
-            min = Math.min(min, scope[variable].min);
-            max = Math.max(max, scope[variable].max);
-            step = Math.min(step, scope[variable].step);
-            scope[variable].value = scope[variable].min;
-        }
+    const scopeVars = Object.keys(scope);
+    for (const variable of scopeVars) {
+        scope[variable].value = scope[variable].min;
+        scope[variable].defines = new Array<Variable>();
 
-        for (let i = min; i <= max; i += step) {
-            varLoop: for (const key of scopeVars) {
-                const variable = scope[key];
-                if (variable.min > i)
-                    continue varLoop;
-
-                if (variable.max < i)
-                    continue varLoop;
-
-                if (i % variable.step !== 0)
-                    continue varLoop;
-
-                variable.value = i;
+        for (const expression of expressions) {
+            if (expression.references.includes(variable)) {
+                scope[variable].defines.push(expression);
             }
+        }
+    }
 
-            const evalScope = { x: i, y: i };
-            const results = evaluate(expressions.map((expr: Expression) => expr.code), evalScope);
-            for (let index = 0; index < expressions.length; index++)
-                outData.results[index] = [...outData.results[index], results[index]];
+    for (const variable of scopeVars) {
+        const scopeVar = scope[variable];
+
+        const evalExpressions = [...scopeVar.defines];
+        extraExpressions: for (const expression of expressions) {
+            if (expression.defines === variable)
+                continue extraExpressions;
+
+            if (expression.references.some((value: string) => scopeVars.includes(value)))
+                continue extraExpressions;
+
+            evalExpressions.unshift(expression);
         }
 
-        console.timeEnd('Expression evaluation');
-    } catch {
-        console.warn('Failed to evaluate expressions');
+        try {
+            for (let i = scopeVar.min; i <= scopeVar.max; i += scopeVar.step) {
+                const evalScope: Record<string, number> = {};
+                evalScope[variable] = i;
+
+                const results = evaluate(evalExpressions.map((expr: Expression) => expr.code), evalScope);
+                let evalIndex = 0;
+                for (let index = 0; index < expressions.length; index++)
+                    if (evalExpressions.includes(expressions[index]))
+                        outData.expressionResults[index].result = [...outData.expressionResults[index].result, { value: results[evalIndex++], scope: evalScope } ];
+            }
+        } catch {
+            console.warn('Failed to evaluate expressions');
+        }
     }
 
     return JSON.stringify(outData);
