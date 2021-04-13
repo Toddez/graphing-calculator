@@ -9,7 +9,7 @@ const emptyExpression: Expression = {
     latex: '',
     code: '',
     defines: null,
-    references: new Set<Variable>([]),
+    references: new Array<Variable>(),
     weight: 0,
     valid: false
 };
@@ -87,15 +87,15 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({ e
 
             // FIXME: Should also check for assignment operator
             if (variables.length < 2)
-                expression.references = new Set<Variable>([]);
+                expression.references = new Array<Variable>();
             else
-                expression.references = new Set<Variable>(variables.slice(1));
+                expression.references = Array.from(new Set(variables.slice(1)));
 
             expression.code = latexNodes.toString();
         } catch {
             expression.code = '';
             expression.defines = null;
-            expression.references = new Set<Variable>([]);
+            expression.references = new Array<Variable>();
         }
 
         expressions[expressions.indexOf(expression)] = expression;
