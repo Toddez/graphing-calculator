@@ -49,15 +49,13 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ expressionResults, updat
         ctx.canvas.width = parent?.clientWidth as number;
         ctx.canvas.height = parent?.clientHeight as number;
 
-        ctx.fillStyle = '#000000'; // TODO: Configurable style
+        ctx.fillStyle = '#171717'; // TODO: Configurable style
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         ctx.translate(ctx.canvas.width/2, ctx.canvas.height/2);
 
         ctx.translate(-transform.position[0], transform.position[1]);
         ctx.scale(1 / transform.scale, 1 / transform.scale);
 
-        ctx.strokeStyle = '#111';
-        ctx.lineWidth = transform.scale;
         drawGrid(ctx);
 
         ctx.strokeStyle = '#ffffff';
@@ -115,10 +113,12 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ expressionResults, updat
         for (let x = posX; x < posX + (ctx.canvas.width * transform.scale) / 2 + step; x += step * dir * index) {
             ctx.beginPath();
             if ((x / step) % 5 == 0) {
-                ctx.strokeStyle = '#444';
+                ctx.strokeStyle = '#555';
+                ctx.lineWidth = transform.scale * (2/3);
+            } else {
+                ctx.strokeStyle = '#252525';
+                ctx.lineWidth = transform.scale / 2;
             }
-            else
-                ctx.strokeStyle = '#151515';
 
             ctx.moveTo(x, -(transform.position[1] * transform.scale) - (ctx.canvas.height * transform.scale) / 2);
             ctx.lineTo(x, -(transform.position[1] * transform.scale) + (ctx.canvas.height * transform.scale) / 2);
@@ -133,10 +133,12 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ expressionResults, updat
         for (let y = posY; y < posY + (ctx.canvas.height * transform.scale) / 2 + step; y += step * dir * index) {
             ctx.beginPath();
             if ((y / step) % 5 == 0) {
-                ctx.strokeStyle = '#444';
+                ctx.strokeStyle = '#555';
+                ctx.lineWidth = transform.scale * (2/3);
+            } else {
+                ctx.strokeStyle = '#252525';
+                ctx.lineWidth = transform.scale / 2;
             }
-            else
-                ctx.strokeStyle = '#151515';
 
             ctx.moveTo((transform.position[0] * transform.scale) - (ctx.canvas.width * transform.scale) / 2, -y);
             ctx.lineTo((transform.position[0] * transform.scale) + (ctx.canvas.width * transform.scale) / 2, -y);
@@ -145,11 +147,11 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ expressionResults, updat
             index++;
         }
 
-
         const x = (ctx.canvas.width * transform.scale) / 2;
         const y = (ctx.canvas.height * transform.scale) / 2;
 
         ctx.strokeStyle = '#fff';
+        ctx.lineWidth = transform.scale;
         ctx.beginPath();
         ctx.moveTo(0, -(transform.position[1] * transform.scale) - y);
         ctx.lineTo(0, -(transform.position[1] * transform.scale) + y);
