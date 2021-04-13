@@ -39,10 +39,19 @@
         }
 
         .expression-label {
-            width: 2rem;
+            width: 3rem;
             border-right: 1px solid $color-border0;
-            padding: 0.5rem;
             background: $color-background0;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            & > .label-text {
+                position: absolute;
+                top: 0.25rem;
+                left: 0.25rem;
+            }
         }
 
         .expression-text {
