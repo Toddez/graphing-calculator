@@ -219,6 +219,14 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ expressionResults, updat
         updateResolution(transform, ctx.canvas.width, ctx.canvas.height);
     }, [transform]);
 
+    useEffect(() => {
+        const ctx = getContext();
+        if (!ctx)
+            return;
+
+        updateResolution(transform, ctx.canvas.width, ctx.canvas.height);
+    }, []);
+
     return (
         <canvas
             ref={canvasRef}
