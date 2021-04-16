@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Expression } from './Expression';
 import MathExpression from 'math-expressions';
 import '../style/expression.scss';
@@ -113,9 +113,9 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({ e
             expression.references = new Array<Variable>();
         }
 
-        expressions[expressions.indexOf(expression)] = expression;
-        setExpressions(expressions);
-        expressionsChange(orderExpressions());
+        const newExpressions = [...expressions];
+        newExpressions[expressions.indexOf(expression)] = expression;
+        setExpressions(newExpressions);
     };
 
     const deleteExpression: ExpressionDelete = (expression) => {
@@ -130,6 +130,10 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({ e
         Object.assign(newExpression, emptyExpression);
         setExpressions([...expressions, newExpression]);
     };
+
+    useEffect(() => {
+        expressionsChange(orderExpressions());
+    }, [expressions]);
 
     return (
         <div className='expression-list'>
