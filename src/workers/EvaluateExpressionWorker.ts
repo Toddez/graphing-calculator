@@ -1,6 +1,19 @@
 import { evaluate } from 'mathjs';
+import memoize from 'memoizee';
 
-export function processData(data: string): string {
+const evaluateExpressions = memoize(
+    (expressions: Array<string>, scope: Record<string, number>) : Array<number> => {
+        return evaluate(expressions, scope);
+    },
+    {
+        primitive: true,
+        normalizer: (args) => {
+            return args[0].join() + JSON.stringify(args[1]);
+        }
+    }
+);
+
+export const processData = (data: string) : string => {
     const parsedData = JSON.parse(data);
 
     const expressions = parsedData.expressions;
@@ -47,7 +60,7 @@ export function processData(data: string): string {
                 const evalScope: Record<string, number> = {};
                 evalScope[variable] = i;
 
-                const results = evaluate(evalExpressions.map((expr: Expression) => expr.code), evalScope);
+                const results = evaluateExpressions(evalExpressions.map((expr: Expression) => expr.code), evalScope);
                 let evalIndex = 0;
                 for (let index = 0; index < expressions.length; index++)
                     if (evalExpressions.includes(expressions[index]))
@@ -59,4 +72,4 @@ export function processData(data: string): string {
     }
 
     return JSON.stringify(outData);
-}
+};
