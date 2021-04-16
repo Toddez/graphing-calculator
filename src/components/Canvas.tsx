@@ -256,15 +256,14 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ expressionResults, updat
 
                 let scale = transform.scale;
                 const mouseInCanvasSpaceBefore = [
-                    mouse.position[0] * scale,
-                    mouse.position[1] * scale
+                    (transform.position[0] + mouse.position[0] / 2) * scale,
+                    (transform.position[1] - mouse.position[1] / 2) * scale
                 ];
                 scale *= 1 + (ev.deltaY / ctx.canvas.height);
 
-                const position = transform.position;
                 const mouseInCanvasSpaceAfter = [
-                    mouse.position[0] * scale,
-                    mouse.position[1] * scale
+                    (transform.position[0] + mouse.position[0] / 2) * scale,
+                    (transform.position[1] - mouse.position[1] / 2) * scale
                 ];
 
                 const delta = [
@@ -272,10 +271,10 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ expressionResults, updat
                     mouseInCanvasSpaceBefore[1] - mouseInCanvasSpaceAfter[1]
                 ];
 
-                position[0] -= (delta[0] / 2) / scale;
-                position[1] += (delta[1] / 2) / scale;
+                const position = transform.position;
+                position[0] += delta[0] / scale;
+                position[1] += delta[1] / scale;
 
-                // FIXME: When scrolling camera moves towards 0, 0 instead of mouse position.
                 setTransform({ ...transform, scale: scale, position: position });
                 clear();
             }}
