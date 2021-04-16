@@ -271,11 +271,11 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ expressionResults, updat
                     mouseInCanvasSpaceBefore[1] - mouseInCanvasSpaceAfter[1]
                 ];
 
-                const position = transform.position;
-                position[0] += delta[0] / scale;
-                position[1] += delta[1] / scale;
+                const newPosition = transform.position.slice();
+                newPosition[0] += delta[0] / scale;
+                newPosition[1] += delta[1] / scale;
 
-                setTransform({ ...transform, scale: scale, position: position });
+                setTransform({ ...transform, scale: scale, position: newPosition });
                 clear();
             }}
         />
