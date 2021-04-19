@@ -20,7 +20,7 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ expressionResults, updat
     });
     const [transform, setTransform] = useState<Transform>({
         position: [0, 0],
-        scale: 1
+        scale: 0
     });
     const canvasRef = createRef<HTMLCanvasElement>();
 
@@ -61,7 +61,7 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ expressionResults, updat
         drawGrid(ctx);
 
         ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 1;
+        ctx.lineWidth = 3;
         drawExpressions(ctx);
     };
 
@@ -240,9 +240,9 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ expressionResults, updat
                         const pos = toCanvasSpace(results[index + 1].scope.x, -results[index + 1].value);
                         ctx.moveTo(pos[0], pos[1]);
                     } else {
-                    const pos = toCanvasSpace(result.scope.x, -result.value);
-                    ctx.lineTo(pos[0], pos[1]);
-                }
+                        const pos = toCanvasSpace(result.scope.x, -result.value);
+                        ctx.lineTo(pos[0], pos[1]);
+                    }
 
                     index++;
                 }
@@ -279,7 +279,7 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ expressionResults, updat
         if (!ctx)
             return;
 
-        updateResolution(transform, ctx.canvas.width, ctx.canvas.height);
+        setTransform({ ...transform, scale: 10 / Math.min(ctx.canvas.width, ctx.canvas.height) });
     }, []);
 
     return (
