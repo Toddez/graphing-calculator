@@ -109,34 +109,45 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ expressionResults, updat
         const min = Math.max(ctx.canvas.width, ctx.canvas.height) * transform.scale;
         const step = getStepSize(15, min);
 
-        ctx.font= '12px CascadiaCode';
+        const fontSize = 20;
+        ctx.font= `${fontSize}px CascadiaCode`;
+        const padding = 5;
+        const offset = 5;
 
         let dir = 1;
         let index = 0;
         const posX = Math.round((transform.position[0] * transform.scale) / step) * step;
         for (let x = posX; x < posX + (ctx.canvas.width * transform.scale) / 2 + step; x += step * dir * index) {
+            ctx.strokeStyle = (x / step) % 5 == 0 ? '#555' : '#252525';
             ctx.beginPath();
-            if ((x / step) % 5 == 0) {
-                ctx.strokeStyle = '#555';
-
-                ctx.save();
-                const pos = toCanvasSpace(x, 0);
-                const textWidth = x.toString().length * 7;
-                ctx.fillStyle = '#aaa';
-                ctx.textAlign = 'left';
-                ctx.textBaseline = 'bottom';
-                if (x !== 0)
-                    ctx.fillText(x as unknown as string, Math.max(Math.min(pos[0], -textWidth + ctx.canvas.width / 2), -ctx.canvas.width / 2), Math.max(Math.min(pos[1], ctx.canvas.height / 2), 12-ctx.canvas.height / 2));
-                ctx.restore();
-            } else {
-                ctx.strokeStyle = '#252525';
-            }
-
             const pos0 = toCanvasSpace(x, -(transform.position[1] * transform.scale) - (ctx.canvas.height * transform.scale) / 2);
             const pos1 = toCanvasSpace(x, -(transform.position[1] * transform.scale) + (ctx.canvas.height * transform.scale) / 2);
             ctx.moveTo(pos0[0], pos0[1]);
             ctx.lineTo(pos1[0], pos1[1]);
             ctx.stroke();
+
+            if ((x / step) % 5 == 0) {
+                ctx.save();
+                const pos = toCanvasSpace(x, 0);
+
+                const measurements = ctx.measureText(x.toString());
+                const textWidth = measurements.width;
+                pos[0] += pos[0] < 0 ? -(textWidth - ctx.measureText(Math.abs(x).toString()).width)/2 : 0;
+                pos[1] += offset;
+                // FIXME: Not accurate
+                const textHeight = (fontSize + measurements.fontBoundingBoxDescent) / 2;
+
+                ctx.fillStyle = '#aaa';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'top';
+                if (x !== 0)
+                    ctx.fillText(
+                        x.toString(),
+                        Math.max(Math.min(pos[0], -textWidth / 2 - padding + ctx.canvas.width / 2), padding + textWidth / 2 - ctx.canvas.width / 2),
+                        Math.max(Math.min(pos[1], -padding - textHeight - fontSize/2 + ctx.canvas.height / 2), padding + measurements.fontBoundingBoxDescent / 2 - ctx.canvas.height / 2)
+                    );
+                ctx.restore();
+            }
 
             dir *= -1;
             index++;
@@ -146,28 +157,34 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ expressionResults, updat
         index = 0;
         const posY = Math.round((transform.position[1] * transform.scale) / step) * step;
         for (let y = posY; y < posY + (ctx.canvas.height * transform.scale) / 2 + step; y += step * dir * index) {
+            ctx.strokeStyle = (y / step) % 5 == 0 ? '#555' : '#252525';
             ctx.beginPath();
-            if ((y / step) % 5 == 0) {
-                ctx.strokeStyle = '#555';
-
-                ctx.save();
-                const pos = toCanvasSpace(0, -y);
-                const textWidth = y.toString().length * 7;
-                ctx.fillStyle = '#aaa';
-                ctx.textAlign = 'left';
-                ctx.textBaseline = 'bottom';
-                if (y !== 0)
-                    ctx.fillText(y as unknown as string, Math.max(Math.min(pos[0], -textWidth + ctx.canvas.width / 2), -ctx.canvas.width / 2), Math.max(Math.min(pos[1], ctx.canvas.height / 2), 12-ctx.canvas.height / 2));
-                ctx.restore();
-            } else {
-                ctx.strokeStyle = '#252525';
-            }
-
             const pos0 = toCanvasSpace((transform.position[0] * transform.scale) - (ctx.canvas.width * transform.scale) / 2, -y);
             const pos1 = toCanvasSpace((transform.position[0] * transform.scale) + (ctx.canvas.width * transform.scale) / 2, -y);
             ctx.moveTo(pos0[0], pos0[1]);
             ctx.lineTo(pos1[0], pos1[1]);
             ctx.stroke();
+
+            if ((y / step) % 5 == 0) {
+                ctx.save();
+                const pos = toCanvasSpace(0, -y);
+                pos[0] -= offset;
+                const measurements = ctx.measureText(y.toString());
+                const textWidth = measurements.width;
+                // FIXME: Not accurate
+                const textHeight = (fontSize + measurements.fontBoundingBoxDescent) / 2;
+
+                ctx.fillStyle = '#aaa';
+                ctx.textAlign = 'right';
+                ctx.textBaseline = 'middle';
+                if (y !== 0)
+                    ctx.fillText(
+                        y.toString(),
+                        Math.max(Math.min(pos[0], -padding + ctx.canvas.width / 2), padding + textWidth - ctx.canvas.width / 2),
+                        Math.max(Math.min(pos[1], -textHeight - padding + ctx.canvas.height / 2), padding + textHeight - ctx.canvas.height / 2)
+                    );
+                ctx.restore();
+            }
 
             dir *= -1;
             index++;
@@ -187,6 +204,15 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ expressionResults, updat
         ctx.moveTo(pos2[0], pos2[1]);
         ctx.lineTo(pos3[0], pos3[1]);
         ctx.stroke();
+
+        ctx.save();
+        const pos = toCanvasSpace(0, 0);
+        ctx.fillStyle = '#aaa';
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'top';
+
+        ctx.fillText('0', pos[0] - offset, pos[1] + offset);
+        ctx.restore();
     };
 
     const drawExpressions = (ctx: CanvasRenderingContext2D) => {
