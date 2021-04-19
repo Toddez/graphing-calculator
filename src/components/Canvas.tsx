@@ -36,6 +36,11 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ expressionResults, updat
         return context;
     };
 
+    const toCanvasSpace = (x: number, y: number) : Vector => {
+        const translated = [x / transform.scale - transform.position[0], y / transform.scale + transform.position[1]];
+        return translated;
+    };
+
     const clear = () => {
         const ctx = getContext();
 
@@ -53,13 +58,10 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ expressionResults, updat
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         ctx.translate(ctx.canvas.width/2, ctx.canvas.height/2);
 
-        ctx.translate(-transform.position[0], transform.position[1]);
-        ctx.scale(1 / transform.scale, 1 / transform.scale);
-
         drawGrid(ctx);
 
         ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = transform.scale;
+        ctx.lineWidth = 1;
         drawExpressions(ctx);
     };
 
@@ -116,23 +118,24 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ expressionResults, updat
             ctx.beginPath();
             if ((x / step) % 5 == 0) {
                 ctx.strokeStyle = '#555';
-                ctx.lineWidth = transform.scale * (2/3);
 
                 ctx.save();
-                ctx.translate(x, 0);
-                ctx.scale(transform.scale, transform.scale);
+                const pos = toCanvasSpace(x, 0);
+                const textWidth = x.toString().length * 7;
                 ctx.fillStyle = '#aaa';
                 ctx.textAlign = 'left';
                 ctx.textBaseline = 'bottom';
-                ctx.fillText(x as unknown as string, 0, 0);
+                if (x !== 0)
+                    ctx.fillText(x as unknown as string, Math.max(Math.min(pos[0], -textWidth + ctx.canvas.width / 2), -ctx.canvas.width / 2), Math.max(Math.min(pos[1], ctx.canvas.height / 2), 12-ctx.canvas.height / 2));
                 ctx.restore();
             } else {
                 ctx.strokeStyle = '#252525';
-                ctx.lineWidth = transform.scale / 2;
             }
 
-            ctx.moveTo(x, -(transform.position[1] * transform.scale) - (ctx.canvas.height * transform.scale) / 2);
-            ctx.lineTo(x, -(transform.position[1] * transform.scale) + (ctx.canvas.height * transform.scale) / 2);
+            const pos0 = toCanvasSpace(x, -(transform.position[1] * transform.scale) - (ctx.canvas.height * transform.scale) / 2);
+            const pos1 = toCanvasSpace(x, -(transform.position[1] * transform.scale) + (ctx.canvas.height * transform.scale) / 2);
+            ctx.moveTo(pos0[0], pos0[1]);
+            ctx.lineTo(pos1[0], pos1[1]);
             ctx.stroke();
 
             dir *= -1;
@@ -146,23 +149,24 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ expressionResults, updat
             ctx.beginPath();
             if ((y / step) % 5 == 0) {
                 ctx.strokeStyle = '#555';
-                ctx.lineWidth = transform.scale * (2/3);
 
                 ctx.save();
-                ctx.translate(0, -y);
-                ctx.scale(transform.scale, transform.scale);
+                const pos = toCanvasSpace(0, -y);
+                const textWidth = y.toString().length * 7;
                 ctx.fillStyle = '#aaa';
                 ctx.textAlign = 'left';
                 ctx.textBaseline = 'bottom';
-                ctx.fillText(y as unknown as string, 0, 0);
+                if (y !== 0)
+                    ctx.fillText(y as unknown as string, Math.max(Math.min(pos[0], -textWidth + ctx.canvas.width / 2), -ctx.canvas.width / 2), Math.max(Math.min(pos[1], ctx.canvas.height / 2), 12-ctx.canvas.height / 2));
                 ctx.restore();
             } else {
                 ctx.strokeStyle = '#252525';
-                ctx.lineWidth = transform.scale / 2;
             }
 
-            ctx.moveTo((transform.position[0] * transform.scale) - (ctx.canvas.width * transform.scale) / 2, -y);
-            ctx.lineTo((transform.position[0] * transform.scale) + (ctx.canvas.width * transform.scale) / 2, -y);
+            const pos0 = toCanvasSpace((transform.position[0] * transform.scale) - (ctx.canvas.width * transform.scale) / 2, -y);
+            const pos1 = toCanvasSpace((transform.position[0] * transform.scale) + (ctx.canvas.width * transform.scale) / 2, -y);
+            ctx.moveTo(pos0[0], pos0[1]);
+            ctx.lineTo(pos1[0], pos1[1]);
             ctx.stroke();
 
             dir *= -1;
@@ -173,12 +177,15 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ expressionResults, updat
         const y = (ctx.canvas.height * transform.scale) / 2;
 
         ctx.strokeStyle = '#fff';
-        ctx.lineWidth = transform.scale;
         ctx.beginPath();
-        ctx.moveTo(0, -(transform.position[1] * transform.scale) - y);
-        ctx.lineTo(0, -(transform.position[1] * transform.scale) + y);
-        ctx.moveTo((transform.position[0] * transform.scale) - x, 0);
-        ctx.lineTo((transform.position[0] * transform.scale) + x, 0);
+        const pos0 = toCanvasSpace(0, -(transform.position[1] * transform.scale) - y);
+        const pos1 = toCanvasSpace(0, -(transform.position[1] * transform.scale) + y);
+        const pos2 = toCanvasSpace((transform.position[0] * transform.scale) - x, 0);
+        const pos3 = toCanvasSpace((transform.position[0] * transform.scale) + x, 0);
+        ctx.moveTo(pos0[0], pos0[1]);
+        ctx.lineTo(pos1[0], pos1[1]);
+        ctx.moveTo(pos2[0], pos2[1]);
+        ctx.lineTo(pos3[0], pos3[1]);
         ctx.stroke();
     };
 
@@ -191,7 +198,8 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ expressionResults, updat
                 ctx.strokeStyle = expression.color;
                 ctx.beginPath();
                 for (const result of results) {
-                    ctx.lineTo(result.scope.x, -result.value);
+                    const pos = toCanvasSpace(result.scope.x, -result.value);
+                    ctx.lineTo(pos[0], pos[1]);
                 }
                 ctx.stroke();
             }
@@ -200,7 +208,8 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ expressionResults, updat
                 ctx.strokeStyle = expression.color;
                 ctx.beginPath();
                 for (const result of results) {
-                    ctx.lineTo(result.value, -result.scope.y);
+                    const pos = toCanvasSpace(result.value, -result.scope.y);
+                    ctx.lineTo(pos[0], pos[1]);
                 }
                 ctx.stroke();
             }
