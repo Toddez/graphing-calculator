@@ -266,6 +266,7 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ expressionResults, updat
         <canvas
             ref={canvasRef}
             onMouseDown={(ev) => {
+                ev.preventDefault();
                 const ctx = getContext();
                 if (!ctx)
                     return;
@@ -291,6 +292,9 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ expressionResults, updat
                     return;
 
                 setMouse({ down: false, position: getMousePos(ctx.canvas, [ev.clientX, ev.clientY]) });
+            }}
+            onMouseLeave={() => {
+                setMouse({ ...mouse, down: false });
             }}
             onWheel={(ev) => {
                 const ctx = getContext();
