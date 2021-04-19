@@ -9,7 +9,8 @@ type Expression = {
     references: Array<Variable>,
     weight: number,
     valid: boolean,
-    color: string
+    color: string,
+    discontinuities: Array<number>
 };
 
 type Result = {
