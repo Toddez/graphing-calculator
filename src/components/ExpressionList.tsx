@@ -12,13 +12,21 @@ const emptyExpression: Expression = {
     references: new Array<Variable>(),
     weight: 0,
     valid: false,
-    color: '#ff0000'
+    color: '#ff0000',
+    discontinuities: new Array<number>()
 };
 
 const initialExpressions: Array<Expression> = [
+    {} as Expression,
+    {} as Expression,
     {} as Expression
 ];
 Object.assign(initialExpressions[0], emptyExpression);
+Object.assign(initialExpressions[1], emptyExpression);
+Object.assign(initialExpressions[2], emptyExpression);
+initialExpressions[0].latex = 'y = x';
+initialExpressions[1].latex = 'y = xx';
+initialExpressions[2].latex = 'y = \\dfrac{1}{x}';
 
 const selectColor = (index: number, max: number) : string => {
     if (max < 1) max = 1;
@@ -90,6 +98,7 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({ e
 
     const updateExpression: ExpressionChange = (expression, latex) => {
         expression.latex = latex;
+        expression.discontinuities = new Array<number>();
 
         try {
             const latexNodes = MathExpression.fromLatex(latex);
