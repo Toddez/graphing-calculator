@@ -223,10 +223,30 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ expressionResults, updat
             if (expression.defines === 'y') {
                 ctx.strokeStyle = expression.color;
                 ctx.beginPath();
+                let index = 0;
                 for (const result of results) {
+                    if (index + 1 >= results.length)
+                        continue;
+
+                    const current = result.value;
+                    const next = results[index + 1].value;
+                    let isDiscontinuous = false;
+                    for (const discon of expression.discontinuities) {
+                        if (current < discon && next > discon)
+                            isDiscontinuous = true;
+                    }
+
+                    if (isDiscontinuous) {
+                        const pos = toCanvasSpace(results[index + 1].scope.x, -results[index + 1].value);
+                        ctx.moveTo(pos[0], pos[1]);
+                    } else {
                     const pos = toCanvasSpace(result.scope.x, -result.value);
                     ctx.lineTo(pos[0], pos[1]);
                 }
+
+                    index++;
+                }
+
                 ctx.stroke();
             }
 
