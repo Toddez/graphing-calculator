@@ -228,8 +228,8 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ expressionResults, updat
                     if (index + 1 >= results.length)
                         continue;
 
-                    const current = result.value;
-                    const next = results[index + 1].value;
+                    const current = result.scope.x;
+                    const next = results[index + 1].scope.x;
                     let isDiscontinuous = false;
                     for (const discon of expression.discontinuities) {
                         if (current < discon && next > discon)
