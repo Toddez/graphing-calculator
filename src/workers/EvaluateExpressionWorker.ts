@@ -36,7 +36,8 @@ export const processData = (data: string) : string => {
 
         for (const expression of expressions) {
             if (expression.references.includes(variable)) {
-                scope[variable].defines.push(expression);
+                if (expression.valid)
+                    scope[variable].defines.push(expression);
             }
         }
     }
@@ -47,6 +48,7 @@ export const processData = (data: string) : string => {
         const scopeVar = scope[variable];
 
         const evalExpressions = [...scopeVar.defines];
+        let insertionIndex = 0;
         extraExpressions: for (const expression of expressions) {
             if (expression.defines === variable)
                 continue extraExpressions;
@@ -54,7 +56,8 @@ export const processData = (data: string) : string => {
             if (expression.references.some((value: string) => scopeVars.includes(value)))
                 continue extraExpressions;
 
-            evalExpressions.unshift(expression);
+            if (expression.valid)
+                evalExpressions.splice(insertionIndex++, 0, expression);
         }
 
         try {
@@ -64,11 +67,11 @@ export const processData = (data: string) : string => {
 
                 const results = evaluateExpressions(evalExpressions.map((expr: Expression) => expr.code), evalScope);
                 let exprIndex = 0;
-                for (let index = 0; index < expressions.length; index++)
+                for (let index = 0; index < expressions.length; index++) {
                     if (evalExpressions.includes(expressions[index]))
                         outData.expressionResults[index].result = [...outData.expressionResults[index].result, { value: results[exprIndex++], scope: evalScope } ];
+                }
             }
-
         } catch {
             console.warn('Failed to evaluate expressions');
         }
