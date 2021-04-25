@@ -18,15 +18,8 @@ const emptyExpression: Expression = {
 
 const initialExpressions: Array<Expression> = [
     {} as Expression,
-    {} as Expression,
-    {} as Expression
 ];
 Object.assign(initialExpressions[0], emptyExpression);
-Object.assign(initialExpressions[1], emptyExpression);
-Object.assign(initialExpressions[2], emptyExpression);
-initialExpressions[0].latex = 'y = x';
-initialExpressions[1].latex = 'y = xx';
-initialExpressions[2].latex = 'y = \\dfrac{1}{x}';
 
 const selectColor = (index: number, max: number) : string => {
     if (max < 1) max = 1;
