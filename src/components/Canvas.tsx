@@ -280,7 +280,12 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ expressionResults, updat
         if (!ctx)
             return;
 
-        setTransform({ ...transform, scale: 10 / Math.min(ctx.canvas.width, ctx.canvas.height) });
+        const scaleCanvas = () => {
+            setTransform({ ...transform, scale: 10 / Math.min(ctx.canvas.width, ctx.canvas.height) });
+        };
+
+        window.addEventListener('resize', scaleCanvas);
+        scaleCanvas();
     }, []);
 
     return (
