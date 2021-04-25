@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { addStyles, EditableMathField } from 'react-mathquill';
 import ClearIcon from '@material-ui/icons/Clear';
 import LineIcon from '@material-ui/icons/ShowChart';
-
 
 addStyles();
 
@@ -15,8 +14,22 @@ interface ExpressionProps {
 }
 
 const Expression: React.FunctionComponent<ExpressionProps> = ({ expression, label, expressionChange, expressionDelete, expressionCreate }) => {
+    const [latex, setLatex] = useState(expression.latex);
+
+    useEffect(() => {
+        if (expressionChange)
+            expressionChange(expression, latex);
+    }, [latex]);
+
+    //useEffect(() => {
+    //    console.log('USE EFFECT expr');
+    //    //setLatex(expression.latex);
+    //}, [label]);
+
     return (
-        <div className={`expression${expressionCreate ? ' expression-create' : ''}`} onClick={expressionCreate ?? undefined}>
+        <div className={`expression${expressionCreate ? ' expression-create' : ''}`} onClick={expressionCreate ? () => {
+            expressionCreate();
+        } : undefined}>
             <div className='expression-label'>
                 <span className='label-text'>{label}</span>
                 <span className='label-icon'>
@@ -28,14 +41,13 @@ const Expression: React.FunctionComponent<ExpressionProps> = ({ expression, labe
             {expressionChange ?
                 <EditableMathField
                     className='expression-text'
-                    latex={expression.latex}
+                    latex={latex}
                     mathquillDidMount={(mathField) => {
                         if (expression.latex === '')
                             mathField.focus();
                     }}
                     onChange={(mathField) => {
-                        if (expressionChange)
-                            expressionChange(expression, mathField.latex());
+                        setLatex(mathField.latex());
                     }}
                 /> : <div className='expression-text'></div>
             }
