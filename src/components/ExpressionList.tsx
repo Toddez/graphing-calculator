@@ -27,15 +27,14 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({ e
         return `hsl(${index * (360 / max) % 360}, 100%, 50%)`;
     };
 
-    const orderExpressions = () : Array<Expression> => {
-        let validExpressions = 0;
-        for (const expression of expressions) {
+    const expressionProperties = (exprs: Array<Expression>, expr: Expression) : { valid: boolean, weight: number } => {
+        for (const expression of exprs) {
             let insertionWeight = 0;
             let validExpr = true;
             for (const reference of Array.from(expression.references)) {
                 let weight = 0;
                 let noRef = !builtinVariables.has(reference);
-                compare: for (const other of expressions) {
+                compare: for (const other of exprs) {
                     if (other === expression)
                         continue compare;
 
@@ -50,31 +49,26 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({ e
                 insertionWeight = Math.max(insertionWeight, weight);
 
                 // FIXME: doesn't find self references because of defines and references parsing
-                if (reference === expression.defines) {
+                if (reference === expression.defines)
                     // TODO: display error
-                    console.warn('EXPRESSION', expression.code, 'HAS REFERENCE TO SELF', reference);
                     validExpr = false;
-                }
 
-                if (noRef == true) {
+                if (noRef == true)
                     // TODO: display error
-                    console.warn('EXPRESSION', expression.code, 'HAS REFERENCE TO UNDEFINED VARIABLE:', reference);
                     validExpr = false;
-                }
             }
 
-            expression.valid = validExpr;
-            expression.weight = insertionWeight;
-            if (validExpr)
-                validExpressions++;
+            if (expression.code === '')
+                validExpr = false;
+
+            if (expr === expression)
+                return { valid: validExpr, weight: insertionWeight };
         }
 
-        let index = 0;
-        for (const expression of expressions) {
-            if (expression.valid)
-                expression.color = selectColor(index++, validExpressions);
-        }
+        return { valid: false, weight: 0 };
+    };
 
+    const orderExpressions = () : Array<Expression> => {
         const orderedExpressions = [...expressions];
         orderedExpressions.sort((a, b) => {
             return a.weight > b.weight ? 1 : -1;
@@ -83,47 +77,72 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({ e
         return orderedExpressions;
     };
 
-    const updateExpression: ExpressionChange = (expression, latex) => {
-        expression.latex = latex;
-        expression.discontinuities = new Array<number>();
+    const updateExpression : ExpressionChange = (expression, latex) => {
+        const newExpressions = expressions.map((expr) => {
+            if (expr === expression) {
+                let defines;
+                let references;
+                let code;
+                try {
+                    const latexNodes = MathExpression.fromLatex(latex);
+                    const variables = latexNodes.variables();
+                    // FIXME: Should really check if node tree has assignment operator
+                    if (variables.length < 1)
+                        defines = null;
+                    else
+                        defines = variables[0];
 
-        try {
-            const latexNodes = MathExpression.fromLatex(latex);
-            const variables = latexNodes.variables();
-            // FIXME: Should really check if node tree has assignment operator
-            if (variables.length < 1)
-                expression.defines = null;
-            else
-                expression.defines = variables[0];
+                    // FIXME: Should also check for assignment operator
+                    if (variables.length < 2)
+                        references = new Array<Variable>();
+                    else
+                        references = Array.from(new Set(variables.slice(1)));
 
-            // FIXME: Should also check for assignment operator
-            if (variables.length < 2)
-                expression.references = new Array<Variable>();
-            else
-                expression.references = Array.from(new Set(variables.slice(1)));
+                    code = latexNodes.toString();
+                } catch {
+                    code = '';
+                    defines = null;
+                    references = new Array<Variable>();
+                }
 
-            expression.code = latexNodes.toString();
-        } catch {
-            expression.code = '';
-            expression.defines = null;
-            expression.references = new Array<Variable>();
-        }
+                return {
+                    ...expr,
+                    latex: latex,
+                    discontinuities: new Array<number>(),
+                    code: code,
+                    defines: defines,
+                    references: references
+                };
+            }
 
-        const newExpressions = [...expressions];
-        newExpressions[expressions.indexOf(expression)] = expression;
-        setExpressions(newExpressions);
+            return {
+                ...expr,
+            };
+        }) as Array<Expression>;
+
+        const expressionsWithProperties = newExpressions.map((expr, index) => {
+            const properties = expressionProperties(newExpressions, expr);
+
+            return {
+                ...expr,
+                color: selectColor(index, expressions.length),
+                valid: properties.valid,
+                weight: properties.weight
+            };
+        });
+
+        setExpressions(expressionsWithProperties);
     };
 
-    const deleteExpression: ExpressionDelete = (expression) => {
+    const deleteExpression : ExpressionDelete = (expression) => {
         const newExpressions = expressions.filter((expr) => {
             return expr !== expression;
         });
         setExpressions(newExpressions);
     };
 
-    const createExpression: ExpressionCreate = () => {
-        const newExpression = {} as Expression;
-        Object.assign(newExpression, emptyExpression);
+    const createExpression : ExpressionCreate = () => {
+        const newExpression = Object.assign({} as Expression, emptyExpression);
         setExpressions([...expressions, newExpression]);
     };
 
@@ -133,6 +152,7 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({ e
 
     useEffect(() => {
         setExpressions([]);
+        createExpression();
     }, []);
 
     return (
@@ -151,7 +171,7 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({ e
             <Expression
                 key={expressions.length}
                 label={(expressions.length + 1) as unknown as string}
-                expression={emptyExpression}
+                expression={Object.assign({} as Expression, emptyExpression)}
                 expressionCreate={createExpression} />
         </div>
     );
