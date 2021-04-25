@@ -2,36 +2,30 @@ import React, { useEffect, useState } from 'react';
 import { Expression } from './Expression';
 import MathExpression from 'math-expressions';
 import '../style/expression.scss';
-
-const builtinVariables = new Set<Variable>(['x', 'y', 'e']);
-
-const emptyExpression: Expression = {
-    latex: '',
-    code: '',
-    defines: null,
-    references: new Array<Variable>(),
-    weight: 0,
-    valid: false,
-    color: '#ff0000',
-    discontinuities: new Array<number>()
-};
-
-const initialExpressions: Array<Expression> = [
-    {} as Expression,
-];
-Object.assign(initialExpressions[0], emptyExpression);
-
-const selectColor = (index: number, max: number) : string => {
-    if (max < 1) max = 1;
-    return `hsl(${index * (360 / max) % 360}, 100%, 50%)`;
-};
-
 interface ExpressionListProps {
     expressionsChange: ExpressionsChange
 }
 
 export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({ expressionsChange }) => {
-    const [expressions, setExpressions] = useState<Array<Expression>>(initialExpressions);
+    const [expressions, setExpressions] = useState<Array<Expression>>([]);
+
+    const builtinVariables = new Set<Variable>(['x', 'y', 'e']);
+
+    const emptyExpression: Expression = {
+        latex: '',
+        code: '',
+        defines: null,
+        references: new Array<Variable>(),
+        weight: 0,
+        valid: false,
+        color: '#ff0000',
+        discontinuities: new Array<number>()
+    };
+
+    const selectColor = (index: number, max: number) : string => {
+        if (max < 1) max = 1;
+        return `hsl(${index * (360 / max) % 360}, 100%, 50%)`;
+    };
 
     const orderExpressions = () : Array<Expression> => {
         let validExpressions = 0;
@@ -136,6 +130,10 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({ e
     useEffect(() => {
         expressionsChange(orderExpressions());
     }, [expressions]);
+
+    useEffect(() => {
+        setExpressions([]);
+    }, []);
 
     return (
         <div className='expression-list'>
