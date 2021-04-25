@@ -14,6 +14,7 @@ type Expression = {
 };
 
 type Result = {
+    // TODO: value should be part of scope
     value: number,
     scope: Record<string, number>
 };

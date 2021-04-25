@@ -220,6 +220,7 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ expressionResults, updat
             const expression = expressionResult.expression;
             const results = expressionResult.result;
 
+            // TODO: Expression rendering should be generalized for any x and y
             if (expression.defines === 'y') {
                 ctx.strokeStyle = expression.color;
                 ctx.beginPath();
