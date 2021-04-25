@@ -23,8 +23,6 @@ export const Main: React.FunctionComponent = () => {
         }
     });
 
-    const [size, setSize] = useState<Vector>([0 ,0]);
-
     const expressionsChanged: ExpressionsChange = async (newExpressions) => {
         setExpressions(newExpressions);
         evaluateExpressions();
@@ -41,7 +39,6 @@ export const Main: React.FunctionComponent = () => {
             max: (transform.position[1] + height/2) * transform.scale,
             step: transform.scale
         };
-        setSize([ width, height ]);
         setScope({ ...scope, x, y });
         evaluateExpressions();
     };
@@ -52,8 +49,7 @@ export const Main: React.FunctionComponent = () => {
 
         const data = {
             expressions: expressions,
-            scope,
-            size: size
+            scope
         };
 
         setIsEvaluating(true);
