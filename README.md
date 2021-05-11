@@ -24,7 +24,7 @@ Build for production
     - Weight each expression and sort the order in which they need to be evaluated to solve and dependency
 - ### Expression evaluation:
   - Send expressions to a web worker
-  - Expressions are evaluated using [mathks](https://mathjs.org/)
+  - Expressions are evaluated using [mathjs](https://mathjs.org/)
   - Results are cached
 - ### Displaying Results:
   - Results are converted to screen space and rendered using canvas
