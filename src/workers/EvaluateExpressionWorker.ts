@@ -67,10 +67,9 @@ export const processData = (data: string) : string => {
 
                 const results = evaluateExpressions(evalExpressions.map((expr: Expression) => expr.code), evalScope);
                 let exprIndex = 0;
-                for (let index = 0; index < expressions.length; index++) {
+                for (let index = 0; index < expressions.length; index++)
                     if (evalExpressions.includes(expressions[index]))
                         outData.expressionResults[index].result = [...outData.expressionResults[index].result, { value: results[exprIndex++], scope: evalScope } ];
-                }
             }
         } catch {
             console.warn('Failed to evaluate expressions');

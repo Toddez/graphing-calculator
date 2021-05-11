@@ -10,9 +10,6 @@ export const Footer: React.FunctionComponent = () => {
             </a>
             <div className='links'>
                 <div className='item copyright'>&copy; {(new Date()).getFullYear()} <a href="https://github.com/Toddez">Teo Carlsson</a></div>
-                <div className='item'><a href="/">About</a></div>
-                <div className='item'><a href="/">Privacy</a></div>
-                <div className='item'><a href="/">Status</a></div>
             </div>
         </footer>
     );

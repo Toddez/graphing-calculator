@@ -23,7 +23,7 @@ export const Main: React.FunctionComponent = () => {
         }
     });
 
-    const expressionsChanged: ExpressionsChange = async (newExpressions) => {
+    const expressionsChanged: ExpressionsChange = (newExpressions) => {
         setExpressions(newExpressions);
         evaluateExpressions();
     };
@@ -39,6 +39,7 @@ export const Main: React.FunctionComponent = () => {
             max: (transform.position[1] + height/2) * transform.scale,
             step: transform.scale
         };
+
         setScope({ ...scope, x, y });
         evaluateExpressions();
     };
@@ -55,7 +56,6 @@ export const Main: React.FunctionComponent = () => {
         setIsEvaluating(true);
         setExpressionResults(JSON.parse(await instance.processData(JSON.stringify(data))).expressionResults);
         setIsEvaluating(false);
-
     };
 
     return (
