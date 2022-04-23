@@ -69,6 +69,32 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
     return { valid: false, weight: 0 };
   };
 
+  const expressionsWithPropertiesAndColor = (exprs: Array<Expression>) => {
+    const expressionsWithProperties = exprs.map((expr) => {
+      const { valid, weight } = expressionProperties(exprs, expr);
+
+      return {
+        ...expr,
+        valid,
+        weight,
+      };
+    });
+
+    const validExpresions = expressionsWithProperties.filter(
+      (expr) => expr.valid && ["y", "x"].includes(expr.defines || "")
+    );
+
+    return expressionsWithProperties.map((expr) => {
+      return {
+        ...expr,
+        color: selectColor(
+          validExpresions.map((expr) => expr.id).indexOf(expr.id),
+          validExpresions.length
+        ),
+      };
+    });
+  };
+
   const orderExpressions = (): Array<Expression> => {
     const orderedExpressions = [...expressions];
     orderedExpressions.sort((a, b) => {
@@ -121,18 +147,7 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
       };
     }) as Array<Expression>;
 
-    const expressionsWithProperties = newExpressions.map((expr, index) => {
-      const properties = expressionProperties(newExpressions, expr);
-
-      return {
-        ...expr,
-        color: selectColor(index, expressions.length),
-        valid: properties.valid,
-        weight: properties.weight,
-      };
-    });
-
-    setExpressions(expressionsWithProperties);
+    setExpressions(expressionsWithPropertiesAndColor(newExpressions));
   };
 
   const deleteExpression: ExpressionDelete = (id) => {
