@@ -26,11 +26,6 @@ const Expression: React.FunctionComponent<ExpressionProps> = ({
   return (
     <div
       className={`expression${expressionCreate ? " expression-create" : ""}`}
-      style={
-        !expression.valid && !expressionCreate
-          ? { borderBottom: "1px solid #ff5370" }
-          : {}
-      }
       onClick={
         expressionCreate
           ? () => {
