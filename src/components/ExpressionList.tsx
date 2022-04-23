@@ -132,9 +132,9 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
   const updateExpression: ExpressionChange = (id, latex) => {
     const newExpressions = expressions.map((expression) => {
       if (expression.id === id) {
-        let defines;
-        let references;
-        let code;
+        let defines: Variable | null = null;
+        let references: Array<Variable> = [];
+        let code = "";
         try {
           const latexNodes = MathExpression.fromLatex(latex);
           if (latexNodes.tree.indexOf("=") !== 0)
@@ -146,6 +146,16 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
           const variables = latexNodes.variables();
           if (variables.length < 1) defines = null;
           else defines = variables[0];
+
+          if (
+            defines &&
+            (
+              (latexNodes.tree[2].length > 1
+                ? latexNodes.tree[2].flat(Infinity)
+                : [latexNodes.tree[2]]) as Array<string>
+            ).includes(defines)
+          )
+            throw new Error("Self reference");
 
           if (variables.length < 2) references = new Array<Variable>();
           else references = Array.from(new Set(variables.slice(1)));
