@@ -2,20 +2,23 @@
 
 [![Build Status](https://circleci.com/gh/Toddez/graphing-calculator.svg?style=svg&circle-token=54d500e2fe51f85d9d4b9cc90b85512ae828e59a)](https://circleci.com/gh/Toddez/graphing-calculator)
 
-![Activation Functions](docs/images/activation-functions.png)  
+![Activation Functions](docs/images/activation-functions.png)
 
 ## Installation
-``yarn install``  
+
+`yarn install`  
 Install node modules
 
 ## Running
-``yarn start``  
+
+`yarn start`  
 Run in development mode
 
-``yarn build``  
+`yarn build`  
 Build for production
 
 ## Features
+
 - ### Expression parsing:
   - Support for latex using [mathquill](http://mathquill.com/)
   - Parse which variables the expression defines and depend on
@@ -32,6 +35,7 @@ Build for production
   - Zoom using scroll wheel
 
 ## Plans
+
 - Dynamic resolution based on graph complexity
 - Find discontinuities
   - Previous version had this but it ran too slow to use in real time

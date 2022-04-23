@@ -1,61 +1,61 @@
 {
-    "name": "graphing-calculator",
-    "version": "0.1.0",
-    "private": true,
-    "dependencies": {
-        "@material-ui/core": "^4.11.3",
-        "@material-ui/icons": "^4.11.2",
-        "@testing-library/jest-dom": "^5.11.4",
-        "@testing-library/react": "^11.1.0",
-        "@testing-library/user-event": "^12.1.10",
-        "@types/jest": "^26.0.15",
-        "@types/mathjs": "^6.0.11",
-        "@types/memoizee": "^0.4.5",
-        "@types/node": "^12.0.0",
-        "@types/react": "^17.0.0",
-        "@types/react-dom": "^17.0.0",
-        "@types/react-mathquill": "^0.1.1",
-        "comlink-loader": "^2.0.0",
-        "math-expressions": "^2.0.0-alpha26",
-        "mathjs": "^9.3.1",
-        "memoizee": "^0.4.15",
-        "react": "^17.0.2",
-        "react-dom": "^17.0.2",
-        "react-mathquill": "^1.0.1",
-        "react-scripts": "4.0.3",
-        "sass": "^1.50.1",
-        "typescript": "^4.1.2",
-        "web-vitals": "^1.0.1"
-    },
-    "scripts": {
-        "start": "react-scripts start",
-        "build": "react-scripts build",
-        "test": "react-scripts test --watchAll=false --passWithNoTests",
-        "posttest": "yarn run eslint",
-        "eject": "react-scripts eject",
-        "eslint": "eslint ."
-    },
-    "eslintConfig": {
-        "extends": [
-            "react-app",
-            "react-app/jest"
-        ]
-    },
-    "browserslist": {
-        "production": [
-            ">0.2%",
-            "not dead",
-            "not op_mini all"
-        ],
-        "development": [
-            "last 1 chrome version",
-            "last 1 firefox version",
-            "last 1 safari version"
-        ]
-    },
-    "devDependencies": {
-        "@typescript-eslint/eslint-plugin": "^4.21.0",
-        "@typescript-eslint/parser": "^4.21.0",
-        "eslint": "^7.24.0"
-    }
+  "name": "graphing-calculator",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@material-ui/core": "^4.11.3",
+    "@material-ui/icons": "^4.11.2",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "@types/jest": "^26.0.15",
+    "@types/mathjs": "^6.0.11",
+    "@types/memoizee": "^0.4.5",
+    "@types/node": "^12.0.0",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "@types/react-mathquill": "^0.1.1",
+    "comlink-loader": "^2.0.0",
+    "math-expressions": "^2.0.0-alpha26",
+    "mathjs": "^9.3.1",
+    "memoizee": "^0.4.15",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-mathquill": "^1.0.1",
+    "react-scripts": "4.0.3",
+    "sass": "^1.50.1",
+    "typescript": "^4.1.2",
+    "web-vitals": "^1.0.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --watchAll=false --passWithNoTests",
+    "posttest": "yarn run eslint",
+    "eject": "react-scripts eject",
+    "eslint": "eslint ."
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.21.0",
+    "@typescript-eslint/parser": "^4.21.0",
+    "eslint": "^7.24.0"
+  }
 }

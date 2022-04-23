@@ -1,34 +1,34 @@
 version: 2
 jobs:
-    build:
-        docker:
-            - image: cimg/node:15.14.0
+  build:
+    docker:
+      - image: cimg/node:15.14.0
 
-        steps:
-            - checkout
+    steps:
+      - checkout
 
-            - run:
-                name: Install dependencies
-                command: |
-                    sudo apt update
+      - run:
+          name: Install dependencies
+          command: |
+            sudo apt update
 
-            - restore_cache:
-                name: Restore Yarn Package Cache
-                keys:
-                    - yarn-packages-{{ checksum "yarn.lock" }}
+      - restore_cache:
+          name: Restore Yarn Package Cache
+          keys:
+            - yarn-packages-{{ checksum "yarn.lock" }}
 
-            - run:
-                name: Yarn install
-                command: |
-                    yarn install --immutable
+      - run:
+          name: Yarn install
+          command: |
+            yarn install --immutable
 
-            - save_cache:
-                name: Save Yarn Package Cache
-                key: yarn-packages-{{ checksum "yarn.lock" }}
-                paths:
-                    - ~/.cache/yarn
+      - save_cache:
+          name: Save Yarn Package Cache
+          key: yarn-packages-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
 
-            - run:
-                name: Run tests
-                command: |
-                    yarn test
+      - run:
+          name: Run tests
+          command: |
+            yarn test

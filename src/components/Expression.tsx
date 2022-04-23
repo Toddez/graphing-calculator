@@ -1,64 +1,83 @@
-import React, { useEffect, useState } from 'react';
-import { addStyles, EditableMathField } from 'react-mathquill';
-import ClearIcon from '@material-ui/icons/Clear';
-import LineIcon from '@material-ui/icons/ShowChart';
+import React, { useEffect, useState } from "react";
+import { addStyles, EditableMathField } from "react-mathquill";
+import ClearIcon from "@material-ui/icons/Clear";
+import LineIcon from "@material-ui/icons/ShowChart";
 
 addStyles();
 
 interface ExpressionProps {
-    expression: Expression,
-    label: string
-    expressionChange?: ExpressionChange,
-    expressionDelete?: ExpressionDelete,
-    expressionCreate?: ExpressionCreate,
+  expression: Expression;
+  label: string;
+  expressionChange?: ExpressionChange;
+  expressionDelete?: ExpressionDelete;
+  expressionCreate?: ExpressionCreate;
 }
 
-const Expression: React.FunctionComponent<ExpressionProps> = ({ expression, label, expressionChange, expressionDelete, expressionCreate }) => {
-    const [latex, setLatex] = useState(expression.latex);
+const Expression: React.FunctionComponent<ExpressionProps> = ({
+  expression,
+  label,
+  expressionChange,
+  expressionDelete,
+  expressionCreate,
+}) => {
+  const [latex, setLatex] = useState(expression.latex);
 
-    useEffect(() => {
-        if (expressionChange)
-            expressionChange(expression, latex);
-    }, [latex]);
+  useEffect(() => {
+    if (expressionChange) expressionChange(expression, latex);
+  }, [latex]);
 
-    //useEffect(() => {
-    //    console.log('USE EFFECT expr');
-    //    //setLatex(expression.latex);
-    //}, [label]);
+  //useEffect(() => {
+  //    console.log('USE EFFECT expr');
+  //    //setLatex(expression.latex);
+  //}, [label]);
 
-    return (
-        <div className={`expression${expressionCreate ? ' expression-create' : ''}`} onClick={expressionCreate ? () => {
-            expressionCreate();
-        } : undefined}>
-            <div className='expression-label'>
-                <span className='label-text'>{label}</span>
-                <span className='label-icon'>
-                    {expression.valid && expression.defines && ['x', 'y'].includes(expression.defines) ?
-                        <LineIcon style={{ color: expression.color }}/> : null
-                    }
-                </span>
-            </div>
-            {expressionChange ?
-                <EditableMathField
-                    className='expression-text'
-                    latex={latex}
-                    mathquillDidMount={(mathField) => {
-                        if (expression.latex === '')
-                            mathField.focus();
-                    }}
-                    onChange={(mathField) => {
-                        setLatex(mathField.latex());
-                    }}
-                /> : <div className='expression-text'></div>
+  return (
+    <div
+      className={`expression${expressionCreate ? " expression-create" : ""}`}
+      onClick={
+        expressionCreate
+          ? () => {
+              expressionCreate();
             }
-            {expressionDelete ?
-                <div className='expression-delete' onClick={() => {
-                    if (expressionDelete)
-                        expressionDelete(expression);
-                }}><ClearIcon /></div> : null
-            }
+          : undefined
+      }
+    >
+      <div className="expression-label">
+        <span className="label-text">{label}</span>
+        <span className="label-icon">
+          {expression.valid &&
+          expression.defines &&
+          ["x", "y"].includes(expression.defines) ? (
+            <LineIcon style={{ color: expression.color }} />
+          ) : null}
+        </span>
+      </div>
+      {expressionChange ? (
+        <EditableMathField
+          className="expression-text"
+          latex={latex}
+          mathquillDidMount={(mathField) => {
+            if (expression.latex === "") mathField.focus();
+          }}
+          onChange={(mathField) => {
+            setLatex(mathField.latex());
+          }}
+        />
+      ) : (
+        <div className="expression-text"></div>
+      )}
+      {expressionDelete ? (
+        <div
+          className="expression-delete"
+          onClick={() => {
+            if (expressionDelete) expressionDelete(expression);
+          }}
+        >
+          <ClearIcon />
         </div>
-    );
+      ) : null}
+    </div>
+  );
 };
 
 export { Expression };

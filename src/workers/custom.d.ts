@@ -1,9 +1,9 @@
-declare module 'comlink-loader!*' {
-    class WebpackWorker extends Worker {
-        constructor();
+declare module "comlink-loader!*" {
+  class WebpackWorker extends Worker {
+    constructor();
 
-        processData(data: string): Promise<string>;
-    }
+    processData(data: string): Promise<string>;
+  }
 
-    export = WebpackWorker;
+  export = WebpackWorker;
 }

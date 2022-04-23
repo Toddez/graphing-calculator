@@ -1,178 +1,178 @@
-import React, { useEffect, useState } from 'react';
-import { Expression } from './Expression';
-import MathExpression from 'math-expressions';
-import '../style/expression.scss';
+import React, { useEffect, useState } from "react";
+import { Expression } from "./Expression";
+import MathExpression from "math-expressions";
+import "../style/expression.scss";
 interface ExpressionListProps {
-    expressionsChange: ExpressionsChange
+  expressionsChange: ExpressionsChange;
 }
 
-export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({ expressionsChange }) => {
-    const [expressions, setExpressions] = useState<Array<Expression>>([]);
+export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
+  expressionsChange,
+}) => {
+  const [expressions, setExpressions] = useState<Array<Expression>>([]);
 
-    const builtinVariables = new Set<Variable>(['x', 'y', 'e']);
+  const builtinVariables = new Set<Variable>(["x", "y", "e"]);
 
-    const emptyExpression: Expression = {
-        latex: '',
-        code: '',
-        defines: null,
-        references: new Array<Variable>(),
-        weight: 0,
-        valid: false,
-        color: '#ff0000',
-        discontinuities: new Array<number>()
-    };
+  const emptyExpression: Expression = {
+    latex: "",
+    code: "",
+    defines: null,
+    references: new Array<Variable>(),
+    weight: 0,
+    valid: false,
+    color: "#ff0000",
+    discontinuities: new Array<number>(),
+  };
 
-    const selectColor = (index: number, max: number) : string => {
-        if (max < 1) max = 1;
-        return `hsl(${index * (360 / max) % 360}, 100%, 50%)`;
-    };
+  const selectColor = (index: number, max: number): string => {
+    if (max < 1) max = 1;
+    return `hsl(${(index * (360 / max)) % 360}, 100%, 50%)`;
+  };
 
-    const expressionProperties = (exprs: Array<Expression>, expr: Expression) : { valid: boolean, weight: number } => {
-        for (const expression of exprs) {
-            let insertionWeight = 0;
-            let validExpr = true;
-            for (const reference of Array.from(expression.references)) {
-                let weight = 0;
-                let noRef = !builtinVariables.has(reference);
-                compare: for (const other of exprs) {
-                    if (other === expression)
-                        continue compare;
+  const expressionProperties = (
+    exprs: Array<Expression>,
+    expr: Expression
+  ): { valid: boolean; weight: number } => {
+    for (const expression of exprs) {
+      let insertionWeight = 0;
+      let validExpr = true;
+      for (const reference of Array.from(expression.references)) {
+        let weight = 0;
+        let noRef = !builtinVariables.has(reference);
+        compare: for (const other of exprs) {
+          if (other === expression) continue compare;
 
-                    if (other.defines === reference) {
-                        noRef = false;
-                        break compare;
-                    }
+          if (other.defines === reference) {
+            noRef = false;
+            break compare;
+          }
 
-                    weight++;
-                }
-
-                insertionWeight = Math.max(insertionWeight, weight);
-
-                // FIXME: doesn't find self references because of defines and references parsing
-                if (reference === expression.defines)
-                    // TODO: display error
-                    validExpr = false;
-
-                if (noRef == true)
-                    // TODO: display error
-                    validExpr = false;
-            }
-
-            if (expression.code === '')
-                validExpr = false;
-
-            if (expr === expression)
-                return { valid: validExpr, weight: insertionWeight };
+          weight++;
         }
 
-        return { valid: false, weight: 0 };
-    };
+        insertionWeight = Math.max(insertionWeight, weight);
 
-    const orderExpressions = () : Array<Expression> => {
-        const orderedExpressions = [...expressions];
-        orderedExpressions.sort((a, b) => {
-            return a.weight > b.weight ? 1 : -1;
-        });
+        // FIXME: doesn't find self references because of defines and references parsing
+        if (reference === expression.defines)
+          // TODO: display error
+          validExpr = false;
 
-        return orderedExpressions;
-    };
+        if (noRef == true)
+          // TODO: display error
+          validExpr = false;
+      }
 
-    const updateExpression : ExpressionChange = (expression, latex) => {
-        const newExpressions = expressions.map((expr) => {
-            if (expr === expression) {
-                let defines;
-                let references;
-                let code;
-                try {
-                    const latexNodes = MathExpression.fromLatex(latex);
-                    const variables = latexNodes.variables();
-                    // FIXME: Should really check if node tree has assignment operator
-                    if (variables.length < 1)
-                        defines = null;
-                    else
-                        defines = variables[0];
+      if (expression.code === "") validExpr = false;
 
-                    // FIXME: Should also check for assignment operator
-                    if (variables.length < 2)
-                        references = new Array<Variable>();
-                    else
-                        references = Array.from(new Set(variables.slice(1)));
+      if (expr === expression)
+        return { valid: validExpr, weight: insertionWeight };
+    }
 
-                    code = latexNodes.toString();
-                } catch {
-                    code = '';
-                    defines = null;
-                    references = new Array<Variable>();
-                }
+    return { valid: false, weight: 0 };
+  };
 
-                return {
-                    ...expr,
-                    latex: latex,
-                    discontinuities: new Array<number>(),
-                    code: code,
-                    defines: defines,
-                    references: references
-                };
-            }
+  const orderExpressions = (): Array<Expression> => {
+    const orderedExpressions = [...expressions];
+    orderedExpressions.sort((a, b) => {
+      return a.weight > b.weight ? 1 : -1;
+    });
 
-            return {
-                ...expr,
-            };
-        }) as Array<Expression>;
+    return orderedExpressions;
+  };
 
-        const expressionsWithProperties = newExpressions.map((expr, index) => {
-            const properties = expressionProperties(newExpressions, expr);
+  const updateExpression: ExpressionChange = (expression, latex) => {
+    const newExpressions = expressions.map((expr) => {
+      if (expr === expression) {
+        let defines;
+        let references;
+        let code;
+        try {
+          const latexNodes = MathExpression.fromLatex(latex);
+          const variables = latexNodes.variables();
+          // FIXME: Should really check if node tree has assignment operator
+          if (variables.length < 1) defines = null;
+          else defines = variables[0];
 
-            return {
-                ...expr,
-                color: selectColor(index, expressions.length),
-                valid: properties.valid,
-                weight: properties.weight
-            };
-        });
+          // FIXME: Should also check for assignment operator
+          if (variables.length < 2) references = new Array<Variable>();
+          else references = Array.from(new Set(variables.slice(1)));
 
-        setExpressions(expressionsWithProperties);
-    };
+          code = latexNodes.toString();
+        } catch {
+          code = "";
+          defines = null;
+          references = new Array<Variable>();
+        }
 
-    const deleteExpression : ExpressionDelete = (expression) => {
-        const newExpressions = expressions.filter((expr) => {
-            return expr !== expression;
-        });
-        setExpressions(newExpressions);
-    };
+        return {
+          ...expr,
+          latex: latex,
+          discontinuities: new Array<number>(),
+          code: code,
+          defines: defines,
+          references: references,
+        };
+      }
 
-    const createExpression : ExpressionCreate = () => {
-        const newExpression = Object.assign({} as Expression, emptyExpression);
-        setExpressions([...expressions, newExpression]);
-    };
+      return {
+        ...expr,
+      };
+    }) as Array<Expression>;
 
-    useEffect(() => {
-        expressionsChange(orderExpressions());
-    }, [expressions]);
+    const expressionsWithProperties = newExpressions.map((expr, index) => {
+      const properties = expressionProperties(newExpressions, expr);
 
-    useEffect(() => {
-        setExpressions([]);
-        createExpression();
-    }, []);
+      return {
+        ...expr,
+        color: selectColor(index, expressions.length),
+        valid: properties.valid,
+        weight: properties.weight,
+      };
+    });
 
-    return (
-        <div className='expression-list'>
-            {expressions.map((expression: Expression, index) => {
-                return (
-                    <Expression
-                        key={index}
-                        label={(index + 1) as unknown as string}
-                        expression={expression}
-                        expressionChange={updateExpression}
-                        expressionDelete={deleteExpression}
-                    />
-                );
-            })}
-            <Expression
-                key={expressions.length}
-                label={(expressions.length + 1) as unknown as string}
-                expression={Object.assign({} as Expression, emptyExpression)}
-                expressionCreate={createExpression} />
-        </div>
-    );
+    setExpressions(expressionsWithProperties);
+  };
+
+  const deleteExpression: ExpressionDelete = (expression) => {
+    const newExpressions = expressions.filter((expr) => {
+      return expr !== expression;
+    });
+    setExpressions(newExpressions);
+  };
+
+  const createExpression: ExpressionCreate = () => {
+    const newExpression = Object.assign({} as Expression, emptyExpression);
+    setExpressions([...expressions, newExpression]);
+  };
+
+  useEffect(() => {
+    expressionsChange(orderExpressions());
+  }, [expressions]);
+
+  useEffect(() => {
+    setExpressions([]);
+    createExpression();
+  }, []);
+
+  return (
+    <div className="expression-list">
+      {expressions.map((expression: Expression, index) => {
+        return (
+          <Expression
+            key={index}
+            label={(index + 1) as unknown as string}
+            expression={expression}
+            expressionChange={updateExpression}
+            expressionDelete={deleteExpression}
+          />
+        );
+      })}
+      <Expression
+        key={expressions.length}
+        label={(expressions.length + 1) as unknown as string}
+        expression={Object.assign({} as Expression, emptyExpression)}
+        expressionCreate={createExpression}
+      />
+    </div>
+  );
 };

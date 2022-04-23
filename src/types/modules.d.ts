@@ -1,1 +1,1 @@
-declare module 'math-expressions';
+declare module "math-expressions";

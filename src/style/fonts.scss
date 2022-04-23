@@ -1,24 +1,24 @@
-$font: 'CascadiaCode';
-$font-mono: 'CascadiaMono';
-$font-light: 'CascadiaLight';
+$font: "CascadiaCode";
+$font-mono: "CascadiaMono";
+$font-light: "CascadiaLight";
 
 @font-face {
-    font-family: $font;
-    font-style: normal;
-    font-weight: 400;
-    src: url(../resources/fonts/cascadia-code/CascadiaCode.ttf);
+  font-family: $font;
+  font-style: normal;
+  font-weight: 400;
+  src: url(../resources/fonts/cascadia-code/CascadiaCode.ttf);
 }
 
 @font-face {
-    font-family: $font-mono;
-    font-style: normal;
-    font-weight: 400;
-    src: url(../resources/fonts/cascadia-code/CascadiaMono.ttf);
+  font-family: $font-mono;
+  font-style: normal;
+  font-weight: 400;
+  src: url(../resources/fonts/cascadia-code/CascadiaMono.ttf);
 }
 
 @font-face {
-    font-family: $font-light;
-    font-style: normal;
-    font-weight: 200;
-    src: url(../resources/fonts/cascadia-code/CascadiaMono.ttf);
+  font-family: $font-light;
+  font-style: normal;
+  font-weight: 200;
+  src: url(../resources/fonts/cascadia-code/CascadiaMono.ttf);
 }

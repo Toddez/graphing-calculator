@@ -1,88 +1,99 @@
-@import './colors.scss';
-@import './fonts.scss';
+@import "./colors.scss";
+@import "./fonts.scss";
 
 .expression-list {
+  display: flex;
+  flex-direction: column;
+  flex: 0 400px;
+  overflow-y: auto;
+  border-bottom: 1px solid $color-border0;
+
+  .expression {
+    position: relative;
     display: flex;
-    flex-direction: column;
-    flex: 0 400px;
-    overflow-y: auto;
-    border-bottom: 1px solid $color-border0;
+    flex-direction: row;
+    border-top: 1px solid $color-border0;
 
-    .expression {
-        position: relative;
-        display: flex;
-        flex-direction: row;
-        border-top: 1px solid $color-border0;
+    &.expression-create {
+      &,
+      * {
+        cursor: pointer;
+      }
 
-        &.expression-create {
-            &, * {
-                cursor: pointer;
-            }
+      .expression-label {
+        background: -webkit-linear-gradient(
+          top,
+          $color-background0,
+          $color-background1
+        );
+        border-image: linear-gradient(
+            to bottom,
+            $color-border0,
+            rgba(0, 0, 0, 0)
+          )
+          1 100%;
+      }
 
-            .expression-label {
-                background: -webkit-linear-gradient(top, $color-background0, $color-background1);
-                border-image: linear-gradient(to bottom, $color-border0, rgba(0, 0, 0, 0)) 1 100%;
-            }
-
-            .expression-text {
-                padding: 2rem;
-            }
-        }
-
-        &:focus-within {
-            background-color: $color-accent1;
-
-            .expression-label {
-                border-color: $color-accent1;
-                background: $color-accent1;
-            }
-        }
-
-        .expression-label {
-            width: 3rem;
-            border-right: 1px solid $color-border0;
-            background: $color-background0;
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            & > .label-text {
-                position: absolute;
-                top: 0.25rem;
-                left: 0.25rem;
-            }
-        }
-
-        .expression-text {
-            width: 100%;
-            border: 0;
-            outline: 0;
-            padding: 1px;
-            padding-left: 0;
-
-            &, * {
-                font-family: $font-light;
-            }
-
-            &.mq-editable-field.mq-focused {
-                box-shadow: none;
-
-                .mq-root-block {
-                    background-color: $color-background0;
-                }
-            }
-
-            .mq-root-block {
-                padding: 1rem;
-            }
-        }
-
-        .expression-delete {
-            position: absolute;
-            top: 0.25rem;
-            right: 0.25rem;
-            cursor: pointer;
-        }
+      .expression-text {
+        padding: 2rem;
+      }
     }
+
+    &:focus-within {
+      background-color: $color-accent1;
+
+      .expression-label {
+        border-color: $color-accent1;
+        background: $color-accent1;
+      }
+    }
+
+    .expression-label {
+      width: 3rem;
+      border-right: 1px solid $color-border0;
+      background: $color-background0;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      & > .label-text {
+        position: absolute;
+        top: 0.25rem;
+        left: 0.25rem;
+      }
+    }
+
+    .expression-text {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      padding: 1px;
+      padding-left: 0;
+
+      &,
+      * {
+        font-family: $font-light;
+      }
+
+      &.mq-editable-field.mq-focused {
+        box-shadow: none;
+
+        .mq-root-block {
+          background-color: $color-background0;
+        }
+      }
+
+      .mq-root-block {
+        padding: 1rem;
+      }
+    }
+
+    .expression-delete {
+      position: absolute;
+      top: 0.25rem;
+      right: 0.25rem;
+      cursor: pointer;
+    }
+  }
 }
