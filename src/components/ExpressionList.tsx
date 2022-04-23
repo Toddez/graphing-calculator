@@ -86,6 +86,12 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
         let code;
         try {
           const latexNodes = MathExpression.fromLatex(latex);
+          if (latexNodes.tree.indexOf("=") !== 0)
+            throw new Error("No assignment operator");
+
+          if (latexNodes.tree[1].length > 1)
+            throw new Error("Invalid left-side of assignment operator");
+
           const variables = latexNodes.variables();
           if (variables.length < 1) defines = null;
           else defines = variables[0];
