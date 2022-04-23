@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { addStyles, EditableMathField } from "react-mathquill";
 import ClearIcon from "@material-ui/icons/Clear";
 import LineIcon from "@material-ui/icons/ShowChart";
