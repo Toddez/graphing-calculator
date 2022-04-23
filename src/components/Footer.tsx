@@ -1,5 +1,5 @@
 import React from "react";
-import Icon from "@material-ui/icons/ShowChart";
+import Icon from "@material-ui/icons/ShowChartRounded";
 import "../style/footer.scss";
 
 export const Footer: React.FunctionComponent = () => {

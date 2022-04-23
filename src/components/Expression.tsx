@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { addStyles, EditableMathField } from "react-mathquill";
-import ClearIcon from "@material-ui/icons/Clear";
-import LineIcon from "@material-ui/icons/ShowChart";
+import ClearIcon from "@material-ui/icons/ClearRounded";
+import LineIcon from "@material-ui/icons/ShowChartRounded";
+import ErrorIcon from "@material-ui/icons/PriorityHighRounded";
 
 addStyles();
 
