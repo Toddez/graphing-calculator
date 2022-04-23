@@ -30,7 +30,7 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
 
   const selectColor = (index: number, max: number): string => {
     if (max < 1) max = 1;
-    return `hsl(${(index * (360 / max)) % 360}, 100%, 50%)`;
+    return `hsl(${(index * (360 / max)) % 360}, 100%, 80%)`;
   };
 
   const expressionProperties = (
