@@ -26,6 +26,11 @@ const Expression: React.FunctionComponent<ExpressionProps> = ({
   return (
     <div
       className={`expression${expressionCreate ? " expression-create" : ""}`}
+      style={
+        !expression.valid && !expressionCreate
+          ? { borderBottom: "1px solid #ff5370" }
+          : {}
+      }
       onClick={
         expressionCreate
           ? () => {
@@ -41,6 +46,9 @@ const Expression: React.FunctionComponent<ExpressionProps> = ({
           expression.defines &&
           ["x", "y"].includes(expression.defines) ? (
             <LineIcon style={{ color: expression.color }} />
+          ) : null}
+          {!expression.valid && !expressionCreate ? (
+            <ErrorIcon style={{ color: "#ff5370" }} />
           ) : null}
         </span>
       </div>
