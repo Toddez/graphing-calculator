@@ -11,6 +11,7 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
   expressionsChange,
 }) => {
   const [expressions, setExpressions] = useState<Array<Expression>>([]);
+  const [style, setStyle] = useState("");
 
   const builtinVariables = new Set<Variable>(["x", "y", "e"]);
 
@@ -164,11 +165,62 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
 
   useEffect(() => {
     expressionsChange(orderExpressions());
+
+    const varElements = Array.from(
+      document.querySelectorAll(
+        ".expression-text.mq-editable-field.mq-math-mode var"
+      )
+    );
+
+    const variables = [
+      ...new Set(
+        expressions
+          .map((expr) => [expr.defines, ...expr.references])
+          .flat()
+          .filter((variable) => variable)
+      ),
+    ] as unknown as Array<string>;
+
+    const variableIds: { [key: string]: Array<string> } = {};
+    variables.forEach((variable) => {
+      const elements = varElements
+        .filter((element) => element.innerHTML === variable)
+        .map((element) => element.getAttribute("mathquill-command-id") || "");
+
+      variableIds[variable] = elements;
+    });
+
+    let resStyle = "";
+    expressions.forEach((expr) => {
+      if (!expr.defines) return;
+      if (!variableIds[expr.defines]) return;
+      if (!expr.valid) return;
+      if (["x", "y"].includes(expr.defines)) return;
+
+      variableIds[expr.defines].forEach((id) => {
+        resStyle += `.expression-text.mq-editable-field.mq-math-mode var[mathquill-command-id="${id}"] { background-color: ${expr.color}; color: #171717; }\n`;
+      });
+    });
+
+    // TODO: add error underline for invalid variables
+
+    setStyle(resStyle);
   }, [expressions]);
 
   useEffect(() => {
     if (expressions.length === 0) setExpressions([newExpression()]);
   }, []);
+
+  useEffect(() => {
+    const head = document.head;
+    const element = document.createElement("style");
+    element.innerHTML = style;
+    head.appendChild(element);
+
+    return () => {
+      head.removeChild(element);
+    };
+  }, [style]);
 
   return (
     <div className="expression-list">
