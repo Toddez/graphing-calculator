@@ -145,8 +145,7 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
   }, [expressions]);
 
   useEffect(() => {
-    setExpressions([]);
-    createExpression();
+    if (expressions.length === 0) setExpressions([newExpression()]);
   }, []);
 
   return (
