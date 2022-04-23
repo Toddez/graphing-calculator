@@ -6,7 +6,11 @@ const evaluateExpressions = memoize(
     expressions: Array<string>,
     scope: Record<string, number>
   ): Array<number> => {
-    return evaluate(expressions, scope);
+    try {
+      return evaluate(expressions, scope);
+    } catch {
+      return [];
+    }
   },
   {
     primitive: true,
@@ -72,6 +76,7 @@ export const processData = (data: string): string => {
           evalExpressions.map((expr: Expression) => expr.code),
           evalScope
         );
+
         let exprIndex = 0;
         for (let index = 0; index < expressions.length; index++)
           if (evalExpressions.includes(expressions[index]))
