@@ -3,6 +3,7 @@ type Variable = string;
 type Vector = Array<number>;
 
 type Expression = {
+  id: number;
   latex: string;
   code: string;
   defines: Variable | null;

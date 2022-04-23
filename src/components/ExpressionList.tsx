@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Expression } from "./Expression";
 import MathExpression from "math-expressions";
 import "../style/expression.scss";
+import { id } from "../utils";
 interface ExpressionListProps {
   expressionsChange: ExpressionsChange;
 }
@@ -13,7 +14,8 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
 
   const builtinVariables = new Set<Variable>(["x", "y", "e"]);
 
-  const emptyExpression: Expression = {
+  const newExpression = () => ({
+    id: id(),
     latex: "",
     code: "",
     defines: null,
@@ -22,7 +24,9 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
     valid: false,
     color: "#ff0000",
     discontinuities: new Array<number>(),
-  };
+  });
+
+  const emptyExpression = newExpression();
 
   const selectColor = (index: number, max: number): string => {
     if (max < 1) max = 1;
@@ -141,8 +145,7 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
   };
 
   const createExpression: ExpressionCreate = () => {
-    const newExpression = Object.assign({} as Expression, emptyExpression);
-    setExpressions([...expressions, newExpression]);
+    setExpressions([...expressions, newExpression()]);
   };
 
   useEffect(() => {
@@ -159,7 +162,7 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
       {expressions.map((expression: Expression, index) => {
         return (
           <Expression
-            key={index}
+            key={expression.id}
             label={(index + 1) as unknown as string}
             expression={expression}
             expressionChange={updateExpression}
@@ -168,9 +171,9 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
         );
       })}
       <Expression
-        key={expressions.length}
+        key={emptyExpression.id}
         label={(expressions.length + 1) as unknown as string}
-        expression={Object.assign({} as Expression, emptyExpression)}
+        expression={emptyExpression}
         expressionCreate={createExpression}
       />
     </div>
