@@ -232,11 +232,22 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
       if (["x", "y"].includes(expr.defines)) return;
 
       variableIds[expr.defines].forEach((id) => {
-        resStyle += `.expression-text.mq-editable-field.mq-math-mode var[mathquill-command-id="${id}"] { background-color: ${expr.color}; color: #171717; }\n`;
+        resStyle += `.expression-text.mq-editable-field.mq-math-mode var[mathquill-command-id="${id}"]:not(.mq-operator-name) { background-color: ${expr.color}; color: #171717; }\n`;
       });
     });
 
-    // TODO: add error underline for invalid variables
+    for (const key of Object.keys(variableIds)) {
+      let defined = ["x", "y"].includes(key);
+      for (const expr of expressions) {
+        if (expr.defines === key && expr.valid) defined = true;
+      }
+
+      if (!defined) {
+        for (const id of variableIds[key]) {
+          resStyle += `.expression-text.mq-editable-field.mq-math-mode > .mq-root-block > var[mathquill-command-id="${id}"]:not(:first-child):not(.mq-operator-name), .expression-text.mq-editable-field.mq-math-mode > .mq-root-block > * var[mathquill-command-id="${id}"]:not(.mq-operator-name) { border-bottom: 1px solid #ff5370; }\n`;
+        }
+      }
+    }
 
     setStyle(resStyle);
   }, [expressions]);
