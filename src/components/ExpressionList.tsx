@@ -84,20 +84,18 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
     return orderedExpressions;
   };
 
-  const updateExpression: ExpressionChange = (expression, latex) => {
-    const newExpressions = expressions.map((expr) => {
-      if (expr === expression) {
+  const updateExpression: ExpressionChange = (id, latex) => {
+    const newExpressions = expressions.map((expression) => {
+      if (expression.id === id) {
         let defines;
         let references;
         let code;
         try {
           const latexNodes = MathExpression.fromLatex(latex);
           const variables = latexNodes.variables();
-          // FIXME: Should really check if node tree has assignment operator
           if (variables.length < 1) defines = null;
           else defines = variables[0];
 
-          // FIXME: Should also check for assignment operator
           if (variables.length < 2) references = new Array<Variable>();
           else references = Array.from(new Set(variables.slice(1)));
 
@@ -109,7 +107,7 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
         }
 
         return {
-          ...expr,
+          ...expression,
           latex: latex,
           discontinuities: new Array<number>(),
           code: code,
@@ -119,7 +117,7 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
       }
 
       return {
-        ...expr,
+        ...expression,
       };
     }) as Array<Expression>;
 
@@ -137,9 +135,9 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
     setExpressions(expressionsWithProperties);
   };
 
-  const deleteExpression: ExpressionDelete = (expression) => {
-    const newExpressions = expressions.filter((expr) => {
-      return expr !== expression;
+  const deleteExpression: ExpressionDelete = (id) => {
+    const newExpressions = expressions.filter((expression) => {
+      return id !== expression.id;
     });
     setExpressions(newExpressions);
   };

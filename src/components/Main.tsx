@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ExpressionList } from "./ExpressionList";
 import { Graph } from "./Graph";
 import { EvaluateExpressionWorker } from "../workers";
@@ -27,7 +27,6 @@ export const Main: React.FunctionComponent = () => {
 
   const expressionsChanged: ExpressionsChange = (newExpressions) => {
     setExpressions(newExpressions);
-    evaluateExpressions();
   };
 
   const updateResolution = (
@@ -47,24 +46,27 @@ export const Main: React.FunctionComponent = () => {
     };
 
     setScope({ ...scope, x, y });
-    evaluateExpressions();
   };
 
-  const evaluateExpressions = async () => {
-    if (isEvaluating) return;
+  useEffect(() => {
+    const evaluateExpressions = async () => {
+      if (isEvaluating) return;
 
-    const data = {
-      expressions: expressions,
-      scope,
+      const data = {
+        expressions: expressions,
+        scope,
+      };
+
+      setIsEvaluating(true);
+      setExpressionResults(
+        JSON.parse(await instance.processData(JSON.stringify(data)))
+          .expressionResults
+      );
+      setIsEvaluating(false);
     };
 
-    setIsEvaluating(true);
-    setExpressionResults(
-      JSON.parse(await instance.processData(JSON.stringify(data)))
-        .expressionResults
-    );
-    setIsEvaluating(false);
-  };
+    evaluateExpressions();
+  }, [scope, expressions]);
 
   return (
     <main className="main">

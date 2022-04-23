@@ -35,8 +35,8 @@ type MouseState = {
   position: Vector;
 };
 
-type ExpressionChange = (expression: Expression, latex: string) => void;
-type ExpressionDelete = (expression: Expression) => void;
+type ExpressionChange = (id: number, latex: string) => void;
+type ExpressionDelete = (id: number) => void;
 type ExpressionCreate = () => void;
 
 type ExpressionsChange = (expressions: Array<Expression>) => void;

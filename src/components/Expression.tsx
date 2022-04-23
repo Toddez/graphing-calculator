@@ -22,15 +22,6 @@ const Expression: React.FunctionComponent<ExpressionProps> = ({
 }) => {
   const [latex, setLatex] = useState(expression.latex);
 
-  useEffect(() => {
-    if (expressionChange) expressionChange(expression, latex);
-  }, [latex]);
-
-  //useEffect(() => {
-  //    console.log('USE EFFECT expr');
-  //    //setLatex(expression.latex);
-  //}, [label]);
-
   return (
     <div
       className={`expression${expressionCreate ? " expression-create" : ""}`}
@@ -60,7 +51,9 @@ const Expression: React.FunctionComponent<ExpressionProps> = ({
             if (expression.latex === "") mathField.focus();
           }}
           onChange={(mathField) => {
-            setLatex(mathField.latex());
+            const res = mathField.latex();
+            if (expressionChange) expressionChange(expression.id, res);
+            setLatex(res);
           }}
         />
       ) : (
@@ -70,7 +63,7 @@ const Expression: React.FunctionComponent<ExpressionProps> = ({
         <div
           className="expression-delete"
           onClick={() => {
-            if (expressionDelete) expressionDelete(expression);
+            if (expressionDelete) expressionDelete(expression.id);
           }}
         >
           <ClearIcon />
