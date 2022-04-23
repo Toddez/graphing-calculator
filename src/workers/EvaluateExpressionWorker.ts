@@ -21,9 +21,22 @@ const evaluateExpressions = memoize(
 );
 
 export const processData = (data: string): string => {
-  const parsedData = JSON.parse(data);
+  const parsedData = JSON.parse(data) as {
+    expressions: Array<Expression>;
+    scope: {
+      [key: string]: {
+        min: number;
+        max: number;
+        step: number;
+        value: number;
+        defines: Array<Expression>;
+      };
+    };
+  };
 
-  const expressions = parsedData.expressions;
+  const expressions = parsedData.expressions.sort((a, b) =>
+    a.weight > b.weight ? 1 : -1
+  );
   const scope = parsedData.scope;
 
   const outData = {
@@ -39,7 +52,7 @@ export const processData = (data: string): string => {
   const scopeVars = Object.keys(scope);
   for (const variable of scopeVars) {
     scope[variable].value = scope[variable].min;
-    scope[variable].defines = new Array<Variable>();
+    scope[variable].defines = [];
 
     for (const expression of expressions) {
       if (expression.references.includes(variable)) {
@@ -77,13 +90,15 @@ export const processData = (data: string): string => {
           evalScope
         );
 
-        let exprIndex = 0;
-        for (let index = 0; index < expressions.length; index++)
-          if (evalExpressions.includes(expressions[index]))
-            outData.expressionResults[index].result = [
-              ...outData.expressionResults[index].result,
-              { value: results[exprIndex++], scope: evalScope },
-            ];
+        for (let i = 0; i < evalExpressions.length; i++) {
+          const index = outData.expressionResults.findIndex(
+            (exprRes) => exprRes.expression.id === evalExpressions[i].id
+          );
+          outData.expressionResults[index].result.push({
+            value: results[i],
+            scope: evalScope,
+          });
+        }
       }
     } catch {
       console.warn("Failed to evaluate expressions");
