@@ -76,11 +76,20 @@
         font-family: $font-light;
       }
 
-      &.mq-editable-field.mq-focused {
-        box-shadow: none;
+      &.mq-editable-field {
+        var {
+          border-radius: 0.1rem;
+          background: transparent;
+          padding: 0 0.1rem;
+          font-family: $font-mono;
+        }
 
-        .mq-root-block {
-          background-color: $color-background0;
+        &.mq-focused {
+          box-shadow: none;
+
+          .mq-root-block {
+            background-color: $color-background0;
+          }
         }
       }
 
