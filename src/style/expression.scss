@@ -77,11 +77,11 @@
       }
 
       &.mq-editable-field {
-        var {
+        var:not(.mq-operator-name) {
           border-radius: 0.1rem;
           background: transparent;
           padding: 0 0.1rem;
-          font-family: $font-mono;
+          font-family: $font;
         }
 
         &.mq-focused {
