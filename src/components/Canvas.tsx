@@ -56,7 +56,7 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({
     ctx.canvas.width = parent?.clientWidth as number;
     ctx.canvas.height = parent?.clientHeight as number;
 
-    ctx.fillStyle = "#171717"; // TODO: Configurable style
+    ctx.fillStyle = "#171717";
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     ctx.translate(ctx.canvas.width / 2, ctx.canvas.height / 2);
 
@@ -160,7 +160,6 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({
             ? -(textWidth - ctx.measureText(Math.abs(x).toString()).width) / 2
             : 0;
         pos[1] += offset;
-        // FIXME: Not accurate
         const textHeight = (fontSize + measurements.fontBoundingBoxDescent) / 2;
 
         ctx.fillStyle = "#aaa";
@@ -221,7 +220,6 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({
         pos[0] -= offset;
         const measurements = ctx.measureText(y.toString());
         const textWidth = measurements.width;
-        // FIXME: Not accurate
         const textHeight = (fontSize + measurements.fontBoundingBoxDescent) / 2;
 
         ctx.fillStyle = "#aaa";
@@ -282,7 +280,6 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({
       const expression = expressionResult.expression;
       const results = expressionResult.result;
 
-      // TODO: Expression rendering should be generalized for any x and y
       if (expression.defines === "y") {
         ctx.strokeStyle = expression.color;
         ctx.beginPath();
@@ -314,6 +311,8 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({
         ctx.stroke();
       }
 
+      // TODO: Expression rendering should be generalized for any x and y
+      //       Currently missing support for discontinuous expressions
       if (expression.defines === "x") {
         ctx.strokeStyle = expression.color;
         ctx.beginPath();

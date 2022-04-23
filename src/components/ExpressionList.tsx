@@ -56,14 +56,8 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
 
         insertionWeight = Math.max(insertionWeight, weight);
 
-        // FIXME: doesn't find self references because of defines and references parsing
-        if (reference === expression.defines)
-          // TODO: display error
-          validExpr = false;
-
-        if (noRef == true)
-          // TODO: display error
-          validExpr = false;
+        if (reference === expression.defines) validExpr = false;
+        if (noRef == true) validExpr = false;
       }
 
       if (expression.code === "") validExpr = false;
