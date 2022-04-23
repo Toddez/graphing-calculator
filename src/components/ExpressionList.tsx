@@ -38,36 +38,60 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
     exprs: Array<Expression>,
     expr: Expression
   ): { valid: boolean; weight: number } => {
-    for (const expression of exprs) {
-      let insertionWeight = 0;
-      let validExpr = true;
-      for (const reference of Array.from(expression.references)) {
-        let weight = 0;
-        let noRef = !builtinVariables.has(reference);
-        compare: for (const other of exprs) {
-          if (other === expression) continue compare;
+    let valid = expr.code !== "";
+    let sumWeight = 0;
 
-          if (other.defines === reference) {
-            noRef = false;
-            break compare;
+    try {
+      for (const reference of Array.from(expr.references)) {
+        if (reference === expr.defines) throw new Error("Self reference");
+        let defined = builtinVariables.has(reference);
+        let weight = 1;
+
+        if (!defined)
+          for (const other of exprs) {
+            if (other.id !== expr.id && other.defines === reference) {
+              defined = true;
+
+              if (other.references.includes(expr.defines || ""))
+                throw new Error("Recursive references");
+
+              const visited: Array<string> = [];
+              const visit = (expression: Expression) => {
+                if (visited.includes(expression.defines || ""))
+                  throw new Error("Deep recursive references");
+
+                if (expression.defines) {
+                  visited.push(expression.defines);
+                  expression.references.forEach((ref) =>
+                    exprs
+                      .filter(
+                        (ex) =>
+                          ex.defines === ref && !["x", "y"].includes(ex.defines)
+                      )
+                      .map(visit)
+                  );
+                }
+              };
+
+              visit(expr);
+
+              const otherRes = expressionProperties(exprs, other);
+
+              if (!otherRes.valid) throw new Error("Invalid reference");
+
+              weight = Math.max(weight, otherRes.weight + 1);
+            }
           }
 
-          weight++;
-        }
+        if (!defined) throw new Error("Undefined reference");
 
-        insertionWeight = Math.max(insertionWeight, weight);
-
-        if (reference === expression.defines) validExpr = false;
-        if (noRef == true) validExpr = false;
+        sumWeight = Math.max(sumWeight, weight);
       }
-
-      if (expression.code === "") validExpr = false;
-
-      if (expr === expression)
-        return { valid: validExpr, weight: insertionWeight };
+    } catch {
+      valid = false;
     }
 
-    return { valid: false, weight: 0 };
+    return { weight: sumWeight, valid };
   };
 
   const expressionsWithPropertiesAndColor = (exprs: Array<Expression>) => {
