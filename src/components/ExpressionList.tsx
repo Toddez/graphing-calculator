@@ -81,7 +81,7 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
     });
 
     const validExpresions = expressionsWithProperties.filter(
-      (expr) => expr.valid && ["y", "x"].includes(expr.defines || "")
+      (expr) => expr.valid
     );
 
     return expressionsWithProperties.map((expr) => {
