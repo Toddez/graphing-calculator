@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Expression } from "./Expression";
-import MathExpression from "math-expressions";
+import MathExpression from "math-expressions/lib/math-expressions";
 import "../style/expression.scss";
 import { id } from "../utils";
 interface ExpressionListProps {
