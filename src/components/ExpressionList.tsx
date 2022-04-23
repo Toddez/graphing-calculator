@@ -154,7 +154,8 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
     const newExpressions = expressions.filter((expression) => {
       return id !== expression.id;
     });
-    setExpressions(newExpressions);
+
+    setExpressions(expressionsWithPropertiesAndColor(newExpressions));
   };
 
   const createExpression: ExpressionCreate = () => {
