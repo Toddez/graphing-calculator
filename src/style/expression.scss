@@ -91,6 +91,10 @@
             background-color: $color-background0;
           }
         }
+
+        .mq-cursor {
+          border-color: $color-foreground2;
+        }
       }
 
       .mq-root-block {
