@@ -40,11 +40,11 @@
     }
 
     &:focus-within {
-      background-color: $color-accent1;
+      background-color: $color-background2;
 
       .expression-label {
-        border-color: $color-accent1;
-        background: $color-accent1;
+        border-color: $color-background2;
+        background: $color-background2;
       }
     }
 
