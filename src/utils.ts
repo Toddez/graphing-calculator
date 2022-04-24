@@ -1,4 +1,14 @@
 let idCounter = 0;
-const id: () => number = () => idCounter++;
+export const id: () => number = () => idCounter++;
 
-export { id };
+export const newExpression = (identifier: number | (() => number) = id) => ({
+  id: typeof identifier === "number" ? identifier : identifier(),
+  latex: "",
+  code: "",
+  defines: null,
+  references: new Array<Variable>(),
+  weight: 0,
+  valid: false,
+  color: "#ff0000",
+  discontinuities: new Array<number>(),
+});
