@@ -60,5 +60,13 @@
   },
   "resolutions": {
     "react-error-overlay": "6.0.11"
+  },
+  "jest": {
+    "transformIgnorePatterns": [
+      "\\.pnp\\.[^\\/]+$"
+    ],
+    "moduleNameMapper": {
+      "comlink-loader!./EvaluateExpressionWorker": "<rootDir>/src/workers/mock.ts"
+    }
   }
 }
