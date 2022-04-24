@@ -2,14 +2,8 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import { Footer } from "./Footer";
 
-test("renders copyright with correct year", () => {
+test("footer has title", () => {
   render(<Footer />);
-  const copyRightElement = screen.getByText(`© ${new Date().getFullYear()}`);
-  expect(copyRightElement).toBeInTheDocument();
-});
-
-test("renders author link", () => {
-  render(<Footer />);
-  const authorElement = screen.getByText(/Teo Carlsson/i);
-  expect(authorElement).toBeInTheDocument();
+  const titleElement = screen.getByText(`Graphing Calculator`);
+  expect(titleElement).toBeInTheDocument();
 });

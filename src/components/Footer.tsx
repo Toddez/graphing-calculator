@@ -9,10 +9,7 @@ export const Footer: React.FunctionComponent = () => {
         <Icon />
       </a>
       <div className="links">
-        <div className="item copyright">
-          &copy; {new Date().getFullYear()}{" "}
-          <a href="https://github.com/Toddez">Teo Carlsson</a>
-        </div>
+        <div className="item title">Graphing Calculator </div>
       </div>
     </footer>
   );
