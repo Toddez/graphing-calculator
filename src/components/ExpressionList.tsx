@@ -267,13 +267,18 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
     };
   }, [style]);
 
+  let label = 1;
   return (
     <div className="expression-list">
-      {expressions.map((expression: Expression, index) => {
+      {expressions.map((expression: Expression) => {
         return (
           <Expression
             key={expression.id}
-            label={(index + 1) as unknown as string}
+            label={
+              expression.valid && ["x", "y"].includes(expression.defines || "")
+                ? (label++ as unknown as string)
+                : ""
+            }
             expression={expression}
             expressionChange={updateExpression}
             expressionDelete={deleteExpression}
@@ -282,7 +287,7 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
       })}
       <Expression
         key={emptyExpression.id}
-        label={(expressions.length + 1) as unknown as string}
+        label=""
         expression={emptyExpression}
         expressionCreate={createExpression}
       />
