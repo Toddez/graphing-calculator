@@ -45,8 +45,10 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
               if (other.references.includes(expr.defines || ""))
                 throw new Error("Recursive references");
 
-              const visited: Array<string> = [];
-              const visit = (expression: Expression) => {
+              const visit = (
+                expression: Expression,
+                visited: Array<string> = []
+              ) => {
                 if (visited.includes(expression.defines || ""))
                   throw new Error("Deep recursive references");
 
@@ -59,7 +61,7 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
                           ex.defines === ref &&
                           !builtinVariables.has(ex.defines)
                       )
-                      .map(visit)
+                      .map((value) => visit(value, Array.from(visited)))
                   );
                 }
               };
