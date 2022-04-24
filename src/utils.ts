@@ -16,9 +16,8 @@ export const newExpression = (identifier: number | (() => number) = id) => ({
 export const saveExpressions = (expressions: Array<Expression>) => {
   try {
     localStorage.setItem("expressions", JSON.stringify(expressions));
-  } catch {
-    console.warn("Failed to save expressions");
-  }
+    // eslint-disable-next-line no-empty
+  } catch {}
 };
 
 export const loadExpressions = () => {
@@ -36,7 +35,6 @@ export const loadExpressions = () => {
 
     return expressions;
   } catch {
-    console.warn("Failed to load expressions");
     return [newExpression()];
   }
 };
