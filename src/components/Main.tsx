@@ -35,12 +35,12 @@ export const Main: React.FunctionComponent = () => {
     const x = {
       min: (transform.position[0] - width / 2) * transform.scale,
       max: (transform.position[0] + width / 2) * transform.scale,
-      step: transform.scale,
+      step: transform.scale * 2,
     };
     const y = {
       min: (transform.position[1] - height / 2) * transform.scale,
       max: (transform.position[1] + height / 2) * transform.scale,
-      step: transform.scale,
+      step: transform.scale * 2,
     };
 
     if (scope) setScope({ ...scope, x, y });
