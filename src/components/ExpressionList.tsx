@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Expression } from "./Expression";
 import MathExpression from "math-expressions/lib/math-expressions";
 import "../style/expression.scss";
-import { id } from "../utils";
+import { newExpression } from "../utils";
 interface ExpressionListProps {
   expressionsChange: ExpressionsChange;
 }
@@ -10,25 +10,12 @@ interface ExpressionListProps {
 export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
   expressionsChange,
 }) => {
+  const [emptyExpression] = useState<Expression>(newExpression(-1));
   const [expressions, setExpressions] = useState<Array<Expression>>([]);
   const [style, setStyle] = useState("");
 
   const reservedVariables = new Set<Variable>(["e"]);
   const builtinVariables = new Set<Variable>(["x", "y", ...reservedVariables]);
-
-  const newExpression = () => ({
-    id: id(),
-    latex: "",
-    code: "",
-    defines: null,
-    references: new Array<Variable>(),
-    weight: 0,
-    valid: false,
-    color: "#ff0000",
-    discontinuities: new Array<number>(),
-  });
-
-  const emptyExpression = newExpression();
 
   const selectColor = (index: number, max: number): string => {
     if (max < 1) max = 1;
@@ -258,10 +245,6 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
   }, [expressions]);
 
   useEffect(() => {
-    if (expressions.length === 0) setExpressions([newExpression()]);
-  }, []);
-
-  useEffect(() => {
     const head = document.head;
     const element = document.createElement("style");
     element.innerHTML = style;
@@ -271,6 +254,10 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
       head.removeChild(element);
     };
   }, [style]);
+
+  useEffect(() => {
+    if (expressions.length === 0) setExpressions([newExpression()]);
+  }, [expressions]);
 
   let label = 1;
   return (
