@@ -4,6 +4,14 @@ import { Graph } from "./Graph";
 import { EvaluateExpressionWorker } from "../workers";
 import "../style/main.scss";
 
+type Scope = {
+  [key: string]: {
+    min: number;
+    max: number;
+    step: number;
+  };
+};
+
 const instance = new EvaluateExpressionWorker();
 export const Main: React.FunctionComponent = () => {
   const [expressionResults, setExpressionResults] = useState<
@@ -11,19 +19,7 @@ export const Main: React.FunctionComponent = () => {
   >([]);
   const [isEvaluating, setIsEvaluating] = useState<boolean>(false);
   const [expressions, setExpressions] = useState<Array<Expression>>([]);
-
-  const [scope, setScope] = useState({
-    x: {
-      min: -1,
-      max: 1,
-      step: 1,
-    },
-    y: {
-      min: -1,
-      max: 1,
-      step: 1,
-    },
-  });
+  const [scope, setScope] = useState<Scope | null>(null);
 
   const expressionsChanged: ExpressionsChange = (newExpressions) => {
     setExpressions(newExpressions);
@@ -34,6 +30,8 @@ export const Main: React.FunctionComponent = () => {
     width: number,
     height: number
   ) => {
+    if (transform.scale === 0) return;
+
     const x = {
       min: (transform.position[0] - width / 2) * transform.scale,
       max: (transform.position[0] + width / 2) * transform.scale,
@@ -45,12 +43,14 @@ export const Main: React.FunctionComponent = () => {
       step: transform.scale,
     };
 
-    setScope({ ...scope, x, y });
+    if (scope) setScope({ ...scope, x, y });
+    else setScope({ x, y });
   };
 
   useEffect(() => {
     const evaluateExpressions = async () => {
       if (isEvaluating) return;
+      if (!scope) return;
 
       const data = {
         expressions: expressions,
