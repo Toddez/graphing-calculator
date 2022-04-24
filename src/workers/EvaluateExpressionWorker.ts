@@ -21,7 +21,7 @@ const evaluateExpressions = memoize(
 );
 
 export const processData = (data: string): string => {
-  const parsedData = JSON.parse(data) as {
+  const { expressions, scope } = JSON.parse(data) as {
     expressions: Array<Expression>;
     scope: {
       [key: string]: {
@@ -33,11 +33,6 @@ export const processData = (data: string): string => {
       };
     };
   };
-
-  const expressions = parsedData.expressions.sort((a, b) =>
-    a.weight > b.weight ? 1 : -1
-  );
-  const scope = parsedData.scope;
 
   const outData = {
     expressionResults: new Array<ExpressionResult>(),
@@ -66,7 +61,7 @@ export const processData = (data: string): string => {
   for (const variable of scopeVars) {
     const scopeVar = scope[variable];
 
-    const evalExpressions = [...scopeVar.defines];
+    let evalExpressions = [...scopeVar.defines];
     let insertionIndex = 0;
     extraExpressions: for (const expression of expressions) {
       if (expression.defines === variable) continue extraExpressions;
@@ -79,6 +74,10 @@ export const processData = (data: string): string => {
       if (expression.valid)
         evalExpressions.splice(insertionIndex++, 0, expression);
     }
+
+    evalExpressions = evalExpressions.sort((a, b) =>
+      a.weight > b.weight ? 1 : -1
+    );
 
     try {
       for (let i = scopeVar.min; i <= scopeVar.max; i += scopeVar.step) {
