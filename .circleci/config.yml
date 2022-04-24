@@ -29,6 +29,11 @@ jobs:
             - ~/.cache/yarn
 
       - run:
+          name: Build
+          command: |
+            yarn build
+
+      - run:
           name: Run tests
           command: |
             yarn test
