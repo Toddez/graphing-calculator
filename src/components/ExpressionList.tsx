@@ -13,7 +13,8 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
   const [expressions, setExpressions] = useState<Array<Expression>>([]);
   const [style, setStyle] = useState("");
 
-  const builtinVariables = new Set<Variable>(["x", "y", "e"]);
+  const reservedVariables = new Set<Variable>(["e"]);
+  const builtinVariables = new Set<Variable>(["x", "y", ...reservedVariables]);
 
   const newExpression = () => ({
     id: id(),
@@ -66,7 +67,8 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
                     exprs
                       .filter(
                         (ex) =>
-                          ex.defines === ref && !["x", "y"].includes(ex.defines)
+                          ex.defines === ref &&
+                          !builtinVariables.has(ex.defines)
                       )
                       .map(visit)
                   );
@@ -146,6 +148,9 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
           const variables = latexNodes.variables();
           if (variables.length < 1) defines = null;
           else defines = variables[0];
+
+          if (defines && reservedVariables.has(defines))
+            throw new Error("Defining reserved variable");
 
           if (
             defines &&
@@ -229,7 +234,7 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
       if (!expr.defines) return;
       if (!variableIds[expr.defines]) return;
       if (!expr.valid) return;
-      if (["x", "y"].includes(expr.defines)) return;
+      if (builtinVariables.has(expr.defines)) return;
 
       variableIds[expr.defines].forEach((id) => {
         resStyle += `.expression-text.mq-editable-field.mq-math-mode var[mathquill-command-id="${id}"]:not(.mq-operator-name) { background-color: ${expr.color}; color: #171717; }\n`;
@@ -237,7 +242,7 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
     });
 
     for (const key of Object.keys(variableIds)) {
-      let defined = ["x", "y"].includes(key);
+      let defined = builtinVariables.has(key);
       for (const expr of expressions) {
         if (expr.defines === key && expr.valid) defined = true;
       }
