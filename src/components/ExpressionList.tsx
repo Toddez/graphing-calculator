@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Expression } from "./Expression";
 import MathExpression from "math-expressions/lib/math-expressions";
 import "../style/expression.scss";
-import { newExpression } from "../utils";
+import { newExpression, saveExpressions, loadExpressions } from "../utils";
 interface ExpressionListProps {
   expressionsChange: ExpressionsChange;
 }
@@ -11,7 +11,9 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
   expressionsChange,
 }) => {
   const [emptyExpression] = useState<Expression>(newExpression(-1));
-  const [expressions, setExpressions] = useState<Array<Expression>>([]);
+  const [expressions, setExpressions] = useState<Array<Expression> | null>(
+    null
+  );
   const [style, setStyle] = useState("");
 
   const reservedVariables = new Set<Variable>(["e"]);
@@ -110,6 +112,8 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
   };
 
   const orderExpressions = (): Array<Expression> => {
+    if (!expressions) return [];
+
     const orderedExpressions = [...expressions];
     orderedExpressions.sort((a, b) => {
       return a.weight > b.weight ? 1 : -1;
@@ -119,6 +123,8 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
   };
 
   const updateExpression: ExpressionChange = (id, latex) => {
+    if (!expressions) return;
+
     const newExpressions = expressions.map((expression) => {
       if (expression.id === id) {
         let defines: Variable | null = null;
@@ -178,6 +184,8 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
   };
 
   const deleteExpression: ExpressionDelete = (id) => {
+    if (!expressions) return;
+
     const newExpressions = expressions.filter((expression) => {
       return id !== expression.id;
     });
@@ -186,10 +194,19 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
   };
 
   const createExpression: ExpressionCreate = () => {
+    if (!expressions) return;
+
     setExpressions([...expressions, newExpression()]);
   };
 
   useEffect(() => {
+    if (!expressions) setExpressions(loadExpressions());
+    else saveExpressions(expressions);
+  }, [expressions]);
+
+  useEffect(() => {
+    if (!expressions) return;
+
     expressionsChange(orderExpressions());
 
     const varElements = Array.from(
@@ -255,28 +272,26 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
     };
   }, [style]);
 
-  useEffect(() => {
-    if (expressions.length === 0) setExpressions([newExpression()]);
-  }, [expressions]);
-
   let label = 1;
   return (
     <div className="expression-list">
-      {expressions.map((expression: Expression) => {
-        return (
-          <Expression
-            key={expression.id}
-            label={
-              expression.valid && ["x", "y"].includes(expression.defines || "")
-                ? (label++ as unknown as string)
-                : ""
-            }
-            expression={expression}
-            expressionChange={updateExpression}
-            expressionDelete={deleteExpression}
-          />
-        );
-      })}
+      {expressions &&
+        expressions.map((expression: Expression) => {
+          return (
+            <Expression
+              key={expression.id}
+              label={
+                expression.valid &&
+                ["x", "y"].includes(expression.defines || "")
+                  ? (label++ as unknown as string)
+                  : ""
+              }
+              expression={expression}
+              expressionChange={updateExpression}
+              expressionDelete={deleteExpression}
+            />
+          );
+        })}
       <Expression
         key={emptyExpression.id}
         label=""
