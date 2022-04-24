@@ -82,19 +82,20 @@ export const processData = (data: string): string => {
     try {
       for (let i = scopeVar.min; i <= scopeVar.max; i += scopeVar.step) {
         const evalScope: Record<string, number> = {};
-        evalScope[variable] = i;
+
+        evalScope[variable] = Math.round(i / scopeVar.step) * scopeVar.step;
 
         const results = evaluateExpressions(
           evalExpressions.map((expr: Expression) => expr.code),
           evalScope
         );
 
-        for (let i = 0; i < evalExpressions.length; i++) {
+        for (let j = 0; j < evalExpressions.length; j++) {
           const index = outData.expressionResults.findIndex(
-            (exprRes) => exprRes.expression.id === evalExpressions[i].id
+            (exprRes) => exprRes.expression.id === evalExpressions[j].id
           );
           outData.expressionResults[index].result.push({
-            value: results[i],
+            value: results[j],
             scope: evalScope,
           });
         }
