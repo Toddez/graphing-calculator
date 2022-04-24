@@ -113,17 +113,6 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
     });
   };
 
-  const orderExpressions = (): Array<Expression> => {
-    if (!expressions) return [];
-
-    const orderedExpressions = [...expressions];
-    orderedExpressions.sort((a, b) => {
-      return a.weight > b.weight ? 1 : -1;
-    });
-
-    return orderedExpressions;
-  };
-
   const updateExpression: ExpressionChange = (id, latex) => {
     if (!expressions) return;
 
@@ -209,7 +198,7 @@ export const ExpressionList: React.FunctionComponent<ExpressionListProps> = ({
   useEffect(() => {
     if (!expressions) return;
 
-    expressionsChange(orderExpressions());
+    expressionsChange(expressions);
 
     const varElements = Array.from(
       document.querySelectorAll(
