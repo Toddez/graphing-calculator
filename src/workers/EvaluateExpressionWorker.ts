@@ -20,92 +20,97 @@ const evaluateExpressions = memoize(
   }
 );
 
-export const processData = (data: string): string => {
-  const { expressions, scope } = JSON.parse(data) as {
-    expressions: Array<Expression>;
-    scope: {
-      [key: string]: {
-        min: number;
-        max: number;
-        step: number;
-        value: number;
-        defines: Array<Expression>;
+let evalPromise: Promise<string> | null = null;
+export const processData = async (data: string): Promise<string> => {
+  if (evalPromise) return await evalPromise;
+
+  evalPromise = new Promise<string>((resolve) => {
+    const { expressions, scope } = JSON.parse(data) as {
+      expressions: Array<Expression>;
+      scope: {
+        [key: string]: {
+          min: number;
+          max: number;
+          step: number;
+          value: number;
+          defines: Array<Expression>;
+        };
       };
     };
-  };
 
-  const outData = {
-    expressionResults: new Array<ExpressionResult>(),
-  };
-  for (const expression of expressions) {
-    outData.expressionResults.push({
-      expression: expression as Expression,
-      result: new Array<Result>(),
-    });
-  }
-
-  const scopeVars = Object.keys(scope);
-  for (const variable of scopeVars) {
-    scope[variable].value = scope[variable].min;
-    scope[variable].defines = [];
-
+    const outData = {
+      expressionResults: new Array<ExpressionResult>(),
+    };
     for (const expression of expressions) {
-      if (expression.references.includes(variable)) {
-        if (expression.valid) scope[variable].defines.push(expression);
-      }
-    }
-  }
-
-  console.time("eval");
-
-  for (const variable of scopeVars) {
-    const scopeVar = scope[variable];
-
-    let evalExpressions = [...scopeVar.defines];
-    let insertionIndex = 0;
-    extraExpressions: for (const expression of expressions) {
-      if (expression.defines === variable) continue extraExpressions;
-
-      if (
-        expression.references.some((value: string) => scopeVars.includes(value))
-      )
-        continue extraExpressions;
-
-      if (expression.valid)
-        evalExpressions.splice(insertionIndex++, 0, expression);
+      outData.expressionResults.push({
+        expression: expression as Expression,
+        result: new Array<Result>(),
+      });
     }
 
-    evalExpressions = evalExpressions.sort((a, b) =>
-      a.weight > b.weight ? 1 : -1
-    );
+    const scopeVars = Object.keys(scope);
+    for (const variable of scopeVars) {
+      scope[variable].value = scope[variable].min;
+      scope[variable].defines = [];
 
-    try {
-      for (let i = scopeVar.min; i <= scopeVar.max; i += scopeVar.step) {
-        const evalScope: Record<string, number> = {};
-
-        evalScope[variable] = Math.round(i / scopeVar.step) * scopeVar.step;
-
-        const results = evaluateExpressions(
-          evalExpressions.map((expr: Expression) => expr.code),
-          evalScope
-        );
-
-        for (let j = 0; j < evalExpressions.length; j++) {
-          const index = outData.expressionResults.findIndex(
-            (exprRes) => exprRes.expression.id === evalExpressions[j].id
-          );
-          outData.expressionResults[index].result.push({
-            value: results[j],
-            scope: evalScope,
-          });
+      for (const expression of expressions) {
+        if (expression.references.includes(variable)) {
+          if (expression.valid) scope[variable].defines.push(expression);
         }
       }
-    } catch {
-      console.warn("Failed to evaluate expressions");
     }
-  }
 
-  console.timeEnd("eval");
+    for (const variable of scopeVars) {
+      const scopeVar = scope[variable];
 
-  return JSON.stringify(outData);
+      let evalExpressions = [...scopeVar.defines];
+      let insertionIndex = 0;
+      extraExpressions: for (const expression of expressions) {
+        if (expression.defines === variable) continue extraExpressions;
+
+        if (
+          expression.references.some((value: string) =>
+            scopeVars.includes(value)
+          )
+        )
+          continue extraExpressions;
+
+        if (expression.valid)
+          evalExpressions.splice(insertionIndex++, 0, expression);
+      }
+
+      evalExpressions = evalExpressions.sort((a, b) =>
+        a.weight > b.weight ? 1 : -1
+      );
+
+      try {
+        for (let i = scopeVar.min; i <= scopeVar.max; i += scopeVar.step) {
+          const evalScope: Record<string, number> = {};
+
+          evalScope[variable] = Math.round(i / scopeVar.step) * scopeVar.step;
+
+          const results = evaluateExpressions(
+            evalExpressions.map((expr: Expression) => expr.code),
+            evalScope
+          );
+
+          for (let j = 0; j < evalExpressions.length; j++) {
+            const index = outData.expressionResults.findIndex(
+              (exprRes) => exprRes.expression.id === evalExpressions[j].id
+            );
+            outData.expressionResults[index].result.push({
+              value: results[j],
+              scope: evalScope,
+            });
+          }
+        }
+      } catch {
+        console.warn("Failed to evaluate expressions");
+      }
+    }
+
+    resolve(JSON.stringify(outData));
+  }).finally(() => (evalPromise = null));
+
+  return await evalPromise;
 };
