@@ -17,7 +17,10 @@ export const Main: React.FunctionComponent = () => {
   const [expressionResults, setExpressionResults] = useState<
     Array<ExpressionResult>
   >([]);
-  const [isEvaluating, setIsEvaluating] = useState<boolean>(false);
+  const [isEvaluating, setIsEvaluating] = useState({
+    working: false,
+    queue: false,
+  });
   const [expressions, setExpressions] = useState<Array<Expression>>([]);
   const [scope, setScope] = useState<Scope | null>(null);
 
@@ -49,24 +52,29 @@ export const Main: React.FunctionComponent = () => {
 
   useEffect(() => {
     const evaluateExpressions = async () => {
-      if (isEvaluating) return;
       if (!scope) return;
+
+      if (isEvaluating.working) {
+        if (!isEvaluating.queue)
+          setIsEvaluating({ ...isEvaluating, queue: true });
+        return;
+      }
 
       const data = {
         expressions: expressions,
         scope,
       };
 
-      setIsEvaluating(true);
+      setIsEvaluating({ queue: false, working: true });
       setExpressionResults(
         JSON.parse(await instance.processData(JSON.stringify(data)))
           .expressionResults
       );
-      setIsEvaluating(false);
+      setIsEvaluating({ ...isEvaluating, working: false });
     };
 
     evaluateExpressions();
-  }, [scope, expressions]);
+  }, [scope, expressions, isEvaluating.queue]);
 
   return (
     <main className="main">
