@@ -83,26 +83,51 @@ export const processData = async (data: string): Promise<string> => {
         a.weight > b.weight ? 1 : -1
       );
 
+      const doesDefine = evalExpressions.filter(
+        (expr) => expr.defines === (variable === "x" ? "y" : "x")
+      );
+
+      const dependencies = (exprs: Array<Expression>, expr: Expression) => {
+        const deps = exprs.filter((e) =>
+          expr.references.includes(e.defines || "")
+        );
+
+        deps.push(...deps.map((e) => dependencies(exprs, e)).flat());
+
+        return deps;
+      };
+
+      const expressionsToEval = [];
+      for (let k = 0; k < doesDefine.length; k++) {
+        expressionsToEval.push(
+          [...dependencies(evalExpressions, doesDefine[k]), doesDefine[k]].sort(
+            (a, b) => (a.weight > b.weight ? 1 : -1)
+          )
+        );
+      }
+
       try {
         for (let i = scopeVar.min; i <= scopeVar.max; i += scopeVar.step) {
           const evalScope: Record<string, number> = {};
 
           evalScope[variable] = Math.round(i / scopeVar.step) * scopeVar.step;
 
-          const results = evaluateExpressions(
-            evalExpressions.map((expr: Expression) => expr.code),
-            evalScope
-          );
-
-          for (let j = 0; j < evalExpressions.length; j++) {
-            const index = outData.expressionResults.findIndex(
-              (exprRes) => exprRes.expression.id === evalExpressions[j].id
+          expressionsToEval.forEach((exprs) => {
+            const results = evaluateExpressions(
+              exprs.map((expr) => expr.code),
+              evalScope
             );
-            outData.expressionResults[index].result.push({
-              value: results[j],
-              scope: evalScope,
-            });
-          }
+
+            for (let j = 0; j < exprs.length; j++) {
+              const index = outData.expressionResults.findIndex(
+                (exprRes) => exprRes.expression.id === exprs[j].id
+              );
+              outData.expressionResults[index].result.push({
+                value: results[j],
+                scope: evalScope,
+              });
+            }
+          });
         }
       } catch {
         console.warn("Failed to evaluate expressions");
