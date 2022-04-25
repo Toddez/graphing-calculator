@@ -2,7 +2,7 @@
 
 [![Build Status](https://circleci.com/gh/Toddez/graphing-calculator.svg?style=svg&circle-token=54d500e2fe51f85d9d4b9cc90b85512ae828e59a)](https://circleci.com/gh/Toddez/graphing-calculator)
 
-![Activation Functions](docs/images/activation-functions.png)
+![Activation Functions](docs/images/example.png)
 
 ## Installation
 
